@@ -1,3 +1,97 @@
+@import "tailwindcss";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* ==== Theme tokens (light/dark) using your palette ==== */
+/* Palette:
+   Primary teal   #03A6A1
+   Cream base     #FFE3BB
+   Peach soft     #FFA673
+   Orange accent  #FF4F0F
+*/
+:root {
+  --bg: #FFE3BB;          /* page background */
+  --fg: #0F172A;          /* primary text (slate-900) */
+  --card: #FFFFFF;        /* surfaces/cards */
+  --muted: #334155;       /* secondary text */
+  --primary: #03A6A1;     /* teal */
+  --soft: #FFA673;        /* peach */
+  --accent: #FF4F0F;      /* orange */
+  --border: #0f172a20;    /* subtle borders in light */
+  --ring: #0f172a22;      /* focus ring */
+}
+
+.dark {
+  --bg: #0F172A;          /* deep slate */
+  --fg: #FFE3BB;          /* cream text */
+  --card: #0B1220;        /* dark card */
+  --muted: #CBD5E1;       /* light slate for secondary */
+  --primary: #03A6A1;
+  --soft: #FFA673;
+  --accent: #FF4F0F;
+  --border: #ffffff1a;    /* subtle borders in dark */
+  --ring: #ffe3bb33;
+}
+
+html { color-scheme: light dark; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+/* Smooth theme transition */
+* {
+  transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+}
+
+/* Selection + scrollbar polish */
+::selection { background: color-mix(in oklab, var(--primary) 25%, white); color: #0b0f1a; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: color-mix(in oklab, var(--fg) 20%, transparent); border-radius: 999px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* Utility helpers to bridge Tailwind + CSS variables */
+.bg-bg { background-color: var(--bg); }
+.bg-card { background-color: var(--card); }
+.text-fg { color: var(--fg); }
+.text-muted { color: var(--muted); }
+.border-token { border-color: var(--border); }
+.ring-token { --tw-ring-color: var(--ring); }
+
+/* Buttons */
+.btn-primary {
+  @apply inline-flex items-center rounded-md px-4 py-2 text-sm font-medium shadow-sm focus:outline-none focus:ring-2;
+  background-color: var(--primary);
+  color: white;
+}
+.btn-primary:hover { filter: brightness(0.95); }
+
+.btn-ghost {
+  @apply inline-flex items-center rounded-md border px-4 py-2 text-sm font-medium focus:outline-none focus:ring-2;
+  background-color: transparent;
+  border-color: var(--border);
+  color: var(--fg);
+}
+.btn-ghost:hover { background-color: color-mix(in oklab, var(--border) 60%, transparent); }
+
+/* Badges with palette */
+.badge-primary {
+  background-color: color-mix(in oklab, var(--primary) 18%, white);
+  color: var(--primary);
+}
+.badge-accent {
+  background-color: color-mix(in oklab, var(--accent) 18%, white);
+  color: var(--accent);
+}
+
+/* Cards + links */
+.card {
+  @apply rounded-xl border shadow-sm;
+  background-color: var(--card);
+  border-color: var(--border);
+}
+.link {
+  color: var(--primary);
+}
+.link:hover { text-decoration: underline; }
