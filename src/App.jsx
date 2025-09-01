@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-@import "tailwindcss";
 // Personal site scaffold using TailwindCSS
 // Light/Dark theming via CSS variables defined in index.css
 

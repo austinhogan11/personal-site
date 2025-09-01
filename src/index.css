@@ -1,7 +1,4 @@
 @import "tailwindcss";
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 /* ==== Theme tokens (light/dark) using your palette ==== */
 /* Palette:
    Primary teal   #03A6A1
