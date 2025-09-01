@@ -19,13 +19,43 @@ function ThemeToggle() {
 
   return (
     <button
-      aria-label="Toggle color theme"
+      aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+      aria-pressed={theme === "dark"}
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="btn-ghost"
-      title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+      className="theme-toggle border-token text-fg hover:bg-card/60"
     >
       <span className="sr-only">Toggle theme</span>
-      {theme === "dark" ? "☀️ Light" : "🌙 Dark"}
+      {theme === "dark" ? (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-5 h-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"
+          />
+        </svg>
+      ) : (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-5 h-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M12 3v1m0 16v1m8.66-11.66l-.7.7M4.34 17.66l-.7.7M21 12h-1M4 12H3m15.66 5.66l-.7-.7M6.34 6.34l-.7-.7M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+          />
+        </svg>
+      )}
     </button>
   );
 }
