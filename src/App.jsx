@@ -137,6 +137,60 @@ function ScrollSpyNav() {
   );
 }
 
+function ScrollSpyTopNav() {
+  const sections = [
+    { id: "top", label: "Overview" },
+    { id: "experience", label: "Experience" },
+    { id: "projects", label: "Projects" },
+    { id: "education", label: "Education" },
+    { id: "hobbies", label: "Hobbies" },
+    { id: "contact", label: "Contact" },
+  ];
+  const [active, setActive] = useState("top");
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActive(entry.target.id);
+        });
+      },
+      { rootMargin: "-40% 0px -55% 0px", threshold: [0, 0.25, 0.5, 1] }
+    );
+    sections.forEach(({ id }) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <nav className="lg:hidden sticky top-0 z-10 bg-bg/80 backdrop-blur border-b border-token">
+      <div className="mx-auto max-w-[1100px] px-4 overflow-x-auto">
+        <ul className="flex items-center gap-6 py-3">
+          {sections.map((s) => (
+            <li key={s.id} className="shrink-0">
+              <a href={`#${s.id}`} className="group inline-flex items-center gap-2">
+                <span
+                  className={`h-2.5 w-2.5 rounded-full transition-all ${
+                    active === s.id
+                      ? 'bg-bg border-2 border-blue-900 shadow-[0_0_8px_rgba(30,58,138,0.45)] dark:border-amber-200 dark:shadow-[0_0_8px_rgba(253,230,138,0.6)]'
+                      : 'bg-bg border border-token'
+                  }`}
+                  aria-hidden
+                />
+                <span className={`${active === s.id ? 'text-fg font-medium' : 'text-muted'} group-hover:text-fg text-sm`}>
+                  {s.label}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </nav>
+  );
+}
+
 export default function App() {
   useEffect(() => {
     const style = document.createElement('style');
@@ -207,6 +261,7 @@ export default function App() {
           <ScrollSpyNav />
         </aside>
         <main className="pb-16 mx-auto max-w-[1100px] px-4">
+          <ScrollSpyTopNav />
           {/* Hero */}
           <section id="top" className="mx-auto max-w-6xl px-4 py-16 sm:py-24 scroll-mt-24">
             <div className="grid gap-10 md:grid-cols-3 md:gap-12 items-start">
@@ -250,11 +305,11 @@ export default function App() {
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="font-semibold">Software Engineer (Cloud DevOps / Platform)</h3>
-                    <p className="text-sm text-muted">Macy’s Inc.</p>
+                    <p className="text-base text-muted">Macy’s Inc.</p>
                   </div>
                   <div className="text-right">
-                    <span className="block text-xs text-muted">June 2021 – Present</span>
-                    <span className="block text-xs text-muted">Atlanta, GA</span>
+                    <span className="block text-sm text-muted">June 2021 – Present</span>
+                    <span className="block text-sm text-muted">Atlanta, GA</span>
                   </div>
                 </div>
                 <ul className="mt-2 list-disc pl-5 text-sm text-muted space-y-1">
@@ -266,7 +321,7 @@ export default function App() {
                   <li>Mentored and onboarded 4 early career engineers and interns, accelerating their ramp-up and contributing to team knowledge growth.</li>
                 </ul>
                 <div className="mt-5 pt-4 border-t border-token">
-                  <h4 className="text-sm font-semibold">Skills &amp; Tools (role-relevant)</h4>
+                  <h4 className="text-sm font-semibold">Skills &amp; Tools</h4>
                   <ul className="mt-2 flex flex-wrap gap-2 text-sm text-muted">
                     <li className="rounded bg-card border border-token px-2 py-0.5">Cloud DevOps &amp; Infrastructure (GCP)</li>
                     <li className="rounded bg-card border border-token px-2 py-0.5">Application &amp; Infrastructure Monitoring</li>
@@ -290,16 +345,62 @@ export default function App() {
             <h2 className="text-2xl font-bold tracking-tight">Projects</h2>
             <div className="mt-6 grid gap-6 sm:grid-cols-2">
               <div className="card p-5">
-                <h3 className="font-semibold">CHSN Running Platform</h3>
-                <p className="mt-2 text-sm text-muted">
-                  Containerized Python web app deployed to GCP. Infrastructure codified with Terraform; CI/CD via GitHub Actions. Deployed to Cloud Run and GKE, images in Artifact Registry.
-                </p>
-                <div className="mt-3 flex flex-wrap gap-2 text-xs text-muted">
-                  <span className="rounded bg-card border border-token px-2 py-0.5">Python</span>
-                  <span className="rounded bg-card border border-token px-2 py-0.5">GCP</span>
-                  <span className="rounded bg-card border border-token px-2 py-0.5">Terraform</span>
-                  <span className="rounded bg-card border border-token px-2 py-0.5">CI/CD</span>
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold">CHSN Running Platform</h3>
+                  <a
+                    href="https://github.com/austinhogan11/chsn-running-platform"
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label="CHSN Running Platform repository"
+                    title="View repository on GitHub"
+                    className="inline-grid place-items-center w-9 h-9 rounded-md border border-token text-muted transition-shadow transition-colors hover:text-blue-900 dark:hover:text-amber-200 hover:border-blue-900 dark:hover:border-amber-200 hover:shadow-[0_0_10px_rgba(30,58,138,0.6)] dark:hover:shadow-[0_0_12px_rgba(253,230,138,0.6)] focus:outline-none"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                      <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2.1c-3.2.7-3.9-1.5-3.9-1.5-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.6 1 1.6 1 .9 1.6 2.5 1.1 3.1.9.1-.7.3-1.1.6-1.4-2.6-.3-5.4-1.3-5.4-5.9 0-1.3.5-2.4 1.2-3.3-.1-.3-.5-1.6.1-3.2 0 0 1-.3 3.4 1.2a11.7 11.7 0 0 1 6.2 0c2.4-1.5 3.4-1.2 3.4-1.2.6 1.6.2 2.9.1 3.2.8.9 1.2 2 1.2 3.3 0 4.6-2.8 5.6-5.4 5.9.4.3.7.9.7 1.9v2.9c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.65 18.35.5 12 .5z" />
+                    </svg>
+                  </a>
                 </div>
+
+                {/* Compact overview */}
+                <p className="mt-2 text-sm text-muted">
+                  Running training platform featuring a training log &amp; a pace calculator. Containerized with Docker and deployed on GCP Cloud Run via Terraform. Alternate deployment using GKE for greater scalability.
+                </p>
+
+                {/* Tech chips */}
+                <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-muted">
+                  <span className="rounded bg-card border border-token px-2 py-0.5">Python</span>
+                  <span className="rounded bg-card border border-token px-2 py-0.5">Docker</span>
+                  <span className="rounded bg-card border border-token px-2 py-0.5">GCP</span>
+                  <span className="rounded bg-card border border-token px-2 py-0.5">Cloud Run</span>
+                  <span className="rounded bg-card border border-token px-2 py-0.5">GKE</span>
+                  <span className="rounded bg-card border border-token px-2 py-0.5">Artifact Registry</span>
+                  <span className="rounded bg-card border border-token px-2 py-0.5">Terraform</span>
+                  <span className="rounded bg-card border border-token px-2 py-0.5">GitHub Actions</span>
+                </div>
+
+                {/* Expandable details */}
+                <details className="mt-4 text-sm">
+                  <summary className="cursor-pointer select-none text-muted transition-colors hover:text-blue-900 dark:hover:text-amber-200 hover:drop-shadow-[0_0_8px_rgba(30,58,138,0.5)] dark:hover:drop-shadow-[0_0_8px_rgba(253,230,138,0.6)]">
+                    More details
+                  </summary>
+                  <div className="mt-2 text-muted space-y-3">
+                    <div>
+                      <p className="font-medium text-fg">Features</p>
+                      <ul className="list-disc pl-5 space-y-1">
+                        <li>Training log to track and analyze runs.</li>
+                        <li>Running pace calculator.</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <p className="font-medium text-fg">Upcoming</p>
+                      <ul className="list-disc pl-5 space-y-1">
+                        <li>User accounts with per-user training logs.</li>
+                        <li>Calendar view for lifting programs and cardio summaries.</li>
+                        <li>Coach/athlete sharing and dashboards.</li>
+                      </ul>
+                    </div>
+                  </div>
+                </details>
               </div>
 
               <div className="card p-5">
