@@ -23,13 +23,13 @@ function ThemeToggle() {
       aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
       aria-pressed={theme === "dark"}
       onClick={(e) => { setTheme(theme === "dark" ? "light" : "dark"); e.currentTarget.blur(); }}
-      className="theme-toggle text-fg hover:bg-card/60 border border-zinc-400 dark:border-zinc-500 hover:border-blue-900 dark:hover:border-yellow-300 active:border-blue-900 dark:active:border-yellow-300 focus:outline-none focus:ring-0 focus:shadow-none transition-shadow hover:shadow-[0_0_10px_rgba(30,58,138,0.6)] dark:hover:shadow-[0_0_10px_rgba(250,204,21,0.6)]"
+      className="theme-toggle group text-muted hover:bg-card/60 border border-zinc-400 dark:border-zinc-500 hover:text-blue-900 dark:hover:text-amber-200 hover:border-blue-900 dark:hover:border-amber-200 active:border-blue-900 dark:active:border-amber-200 focus:outline-none focus:ring-0 focus:shadow-none transition-shadow hover:shadow-[0_0_10px_rgba(30,58,138,0.6)] dark:hover:shadow-[0_0_12px_rgba(253,230,138,0.6)]"
     >
       <span className="sr-only">Toggle theme</span>
       {theme === "dark" ? (
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="w-5 h-5"
+          className="w-5 h-5 transition-colors group-hover:text-blue-900 dark:group-hover:text-amber-200 group-hover:drop-shadow-[0_0_8px_rgba(30,58,138,0.5)] dark:group-hover:drop-shadow-[0_0_8px_rgba(253,230,138,0.7)]"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -44,7 +44,7 @@ function ThemeToggle() {
       ) : (
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="w-5 h-5"
+          className="w-5 h-5 transition-colors group-hover:text-blue-900 dark:group-hover:text-amber-200 group-hover:drop-shadow-[0_0_8px_rgba(30,58,138,0.5)] dark:group-hover:drop-shadow-[0_0_8px_rgba(253,230,138,0.7)]"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -117,7 +117,7 @@ function ScrollSpyNav() {
             className={`absolute left-0 h-3.5 w-3.5 rounded-full transition-all ${
               active === s.id
                 ? 'bg-bg border-2 scale-125 border-blue-900 shadow-[0_0_12px_rgba(30,58,138,0.45)] dark:border-amber-200 dark:shadow-[0_0_12px_rgba(253,230,138,0.6)]'
-                : 'bg-bg border border-token'
+                : 'bg-bg border border-token group-hover:border-blue-900 dark:group-hover:border-amber-200 group-hover:shadow-[0_0_12px_rgba(30,58,138,0.45)] dark:group-hover:shadow-[0_0_12px_rgba(253,230,138,0.6)]'
             }`}
             aria-hidden
           />
@@ -125,9 +125,9 @@ function ScrollSpyNav() {
           <span
             className={`ml-2 px-0.5 transition-colors ${
               active === s.id
-                ? 'text-fg font-semibold'
+                ? 'font-semibold text-blue-900 dark:text-amber-200 drop-shadow-[0_0_6px_rgba(30,58,138,0.45)] dark:drop-shadow-[0_0_6px_rgba(253,230,138,0.6)]'
                 : 'text-muted opacity-60'
-            } group-hover:opacity-100`}
+            } group-hover:opacity-100 group-hover:text-blue-900 dark:group-hover:text-amber-200 group-hover:drop-shadow-[0_0_6px_rgba(30,58,138,0.45)] dark:group-hover:drop-shadow-[0_0_6px_rgba(253,230,138,0.6)]`}
           >
             {s.label}
           </span>
@@ -175,11 +175,11 @@ function ScrollSpyTopNav() {
                   className={`h-2.5 w-2.5 rounded-full transition-all ${
                     active === s.id
                       ? 'bg-bg border-2 border-blue-900 shadow-[0_0_8px_rgba(30,58,138,0.45)] dark:border-amber-200 dark:shadow-[0_0_8px_rgba(253,230,138,0.6)]'
-                      : 'bg-bg border border-token'
+                      : 'bg-bg border border-token group-hover:border-blue-900 dark:group-hover:border-amber-200 group-hover:shadow-[0_0_8px_rgba(30,58,138,0.45)] dark:group-hover:shadow-[0_0_8px_rgba(253,230,138,0.6)]'
                   }`}
                   aria-hidden
                 />
-                <span className={`${active === s.id ? 'text-fg font-medium' : 'text-muted'} group-hover:text-fg text-sm`}>
+                <span className={`${active === s.id ? 'font-medium text-blue-900 dark:text-amber-200 drop-shadow-[0_0_6px_rgba(30,58,138,0.45)] dark:drop-shadow-[0_0_6px_rgba(253,230,138,0.6)]' : 'text-muted'} text-sm group-hover:text-blue-900 dark:group-hover:text-amber-200 group-hover:drop-shadow-[0_0_6px_rgba(30,58,138,0.45)] dark:group-hover:drop-shadow-[0_0_6px_rgba(253,230,138,0.6)]`}>
                   {s.label}
                 </span>
               </a>
@@ -227,9 +227,9 @@ export default function App() {
           rel="noreferrer"
           aria-label="GitHub Profile"
           onClick={(e) => e.currentTarget.blur()}
-          className="theme-toggle inline-grid place-items-center w-9 h-9 text-muted hover:text-fg border border-zinc-400 dark:border-zinc-500 hover:border-blue-900 dark:hover:border-yellow-300 active:border-blue-900 dark:active:border-yellow-300 focus:outline-none focus:ring-0 focus:shadow-none transition-shadow hover:shadow-[0_0_10px_rgba(30,58,138,0.6)] dark:hover:shadow-[0_0_10px_rgba(250,204,21,0.6)]"
+          className="theme-toggle group inline-grid place-items-center w-9 h-9 text-muted transition-shadow transition-colors border border-zinc-400 dark:border-zinc-500 hover:text-blue-900 dark:hover:text-amber-200 hover:border-blue-900 dark:hover:border-amber-200 active:border-blue-900 dark:active:border-amber-200 focus:outline-none focus:ring-0 focus:shadow-none hover:shadow-[0_0_10px_rgba(30,58,138,0.6)] dark:hover:shadow-[0_0_12px_rgba(253,230,138,0.6)]"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 transition-colors group-hover:text-blue-900 dark:group-hover:text-amber-200 group-hover:drop-shadow-[0_0_8px_rgba(30,58,138,0.5)] dark:group-hover:drop-shadow-[0_0_8px_rgba(253,230,138,0.7)]">
             <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2.1c-3.2.7-3.9-1.5-3.9-1.5-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.6 1 1.6 1 .9 1.6 2.5 1.1 3.1.9.1-.7.3-1.1.6-1.4-2.6-.3-5.4-1.3-5.4-5.9 0-1.3.5-2.4 1.2-3.3-.1-.3-.5-1.6.1-3.2 0 0 1-.3 3.4 1.2a11.7 11.7 0 0 1 6.2 0c2.4-1.5 3.4-1.2 3.4-1.2.6 1.6.2 2.9.1 3.2.8.9 1.2 2 1.2 3.3 0 4.6-2.8 5.6-5.4 5.9.4.3.7.9.7 1.9v2.9c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.65 18.35.5 12 .5z" />
           </svg>
         </a>
@@ -239,9 +239,9 @@ export default function App() {
           rel="noreferrer"
           aria-label="LinkedIn Profile"
           onClick={(e) => e.currentTarget.blur()}
-          className="theme-toggle inline-grid place-items-center w-9 h-9 text-muted hover:text-fg border border-zinc-400 dark:border-zinc-500 hover:border-blue-900 dark:hover:border-yellow-300 active:border-blue-900 dark:active:border-yellow-300 focus:outline-none focus:ring-0 focus:shadow-none transition-shadow hover:shadow-[0_0_10px_rgba(30,58,138,0.6)] dark:hover:shadow-[0_0_10px_rgba(250,204,21,0.6)]"
+          className="theme-toggle group inline-grid place-items-center w-9 h-9 text-muted transition-shadow transition-colors border border-zinc-400 dark:border-zinc-500 hover:text-blue-900 dark:hover:text-amber-200 hover:border-blue-900 dark:hover:border-amber-200 active:border-blue-900 dark:active:border-amber-200 focus:outline-none focus:ring-0 focus:shadow-none hover:shadow-[0_0_10px_rgba(30,58,138,0.6)] dark:hover:shadow-[0_0_12px_rgba(253,230,138,0.6)]"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 transition-colors group-hover:text-blue-900 dark:group-hover:text-amber-200 group-hover:drop-shadow-[0_0_8px_rgba(30,58,138,0.5)] dark:group-hover:drop-shadow-[0_0_8px_rgba(253,230,138,0.7)]">
             <path d="M4.98 3.5C4.98 4.88 3.86 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5zM.5 8.5h4V23h-4V8.5zM8.5 8.5h3.83v1.98h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.08V23h-4v-5.71c0-1.36-.02-3.11-1.9-3.11-1.9 0-2.19 1.49-2.19 3.02V23h-4V8.5z" />
           </svg>
         </a>
@@ -249,9 +249,9 @@ export default function App() {
           href="mailto:austinhogan15@gmail.com"
           aria-label="Email Austin Hogan"
           onClick={(e) => e.currentTarget.blur()}
-          className="theme-toggle inline-grid place-items-center w-9 h-9 text-muted hover:text-fg border border-zinc-400 dark:border-zinc-500 hover:border-blue-900 dark:hover:border-yellow-300 active:border-blue-900 dark:active:border-yellow-300 focus:outline-none focus:ring-0 focus:shadow-none transition-shadow hover:shadow-[0_0_10px_rgba(30,58,138,0.6)] dark:hover:shadow-[0_0_10px_rgba(250,204,21,0.6)]"
+          className="theme-toggle group inline-grid place-items-center w-9 h-9 text-muted transition-shadow transition-colors border border-zinc-400 dark:border-zinc-500 hover:text-blue-900 dark:hover:text-amber-200 hover:border-blue-900 dark:hover:border-amber-200 active:border-blue-900 dark:active:border-amber-200 focus:outline-none focus:ring-0 focus:shadow-none hover:shadow-[0_0_10px_rgba(30,58,138,0.6)] dark:hover:shadow-[0_0_12px_rgba(253,230,138,0.6)]"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 transition-colors group-hover:text-blue-900 dark:group-hover:text-amber-200 group-hover:drop-shadow-[0_0_8px_rgba(30,58,138,0.5)] dark:group-hover:drop-shadow-[0_0_8px_rgba(253,230,138,0.7)]">
             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm0 2v.01L12 13 20 6.01V6H4zm0 12h16V8l-8 7-8-7v10z" />
           </svg>
         </a>
@@ -271,8 +271,7 @@ export default function App() {
                   <span className="block bg-clip-text text-transparent bg-gradient-to-r from-fuchsia-500 to-sky-500">Software Engineer &amp; Builder</span>
                 </h1>
                 <p className="mt-4 text-lg text-muted">
-                  I design, build, and ship web apps end‑to‑end — from data models and APIs to
-                  mobile‑friendly UIs and cloud deployments.
+                  Cloud DevOps Engineer. Building the CHSN Running Platform. Running Coach.
                 </p>
 
 
@@ -353,9 +352,14 @@ export default function App() {
                     rel="noreferrer"
                     aria-label="CHSN Running Platform repository"
                     title="View repository on GitHub"
-                    className="inline-grid place-items-center w-9 h-9 rounded-md border border-token text-muted transition-shadow transition-colors hover:text-blue-900 dark:hover:text-amber-200 hover:border-blue-900 dark:hover:border-amber-200 hover:shadow-[0_0_10px_rgba(30,58,138,0.6)] dark:hover:shadow-[0_0_12px_rgba(253,230,138,0.6)] focus:outline-none"
+                    className="group inline-grid place-items-center w-9 h-9 rounded-md text-muted transition-shadow transition-colors border border-zinc-400 dark:border-zinc-500 hover:text-blue-900 dark:hover:text-amber-200 hover:border-blue-900 dark:hover:border-amber-200 active:border-blue-900 dark:active:border-amber-200 focus:outline-none focus:ring-0 focus:shadow-none hover:shadow-[0_0_10px_rgba(30,58,138,0.6)] dark:hover:shadow-[0_0_12px_rgba(253,230,138,0.6)]"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="w-5 h-5 transition-colors group-hover:text-blue-900 dark:group-hover:text-amber-200 group-hover:drop-shadow-[0_0_8px_rgba(30,58,138,0.5)] dark:group-hover:drop-shadow-[0_0_8px_rgba(253,230,138,0.7)]"
+                    >
                       <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2.1c-3.2.7-3.9-1.5-3.9-1.5-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.6 1 1.6 1 .9 1.6 2.5 1.1 3.1.9.1-.7.3-1.1.6-1.4-2.6-.3-5.4-1.3-5.4-5.9 0-1.3.5-2.4 1.2-3.3-.1-.3-.5-1.6.1-3.2 0 0 1-.3 3.4 1.2a11.7 11.7 0 0 1 6.2 0c2.4-1.5 3.4-1.2 3.4-1.2.6 1.6.2 2.9.1 3.2.8.9 1.2 2 1.2 3.3 0 4.6-2.8 5.6-5.4 5.9.4.3.7.9.7 1.9v2.9c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.65 18.35.5 12 .5z" />
                     </svg>
                   </a>
@@ -404,7 +408,21 @@ export default function App() {
               </div>
 
               <div className="card p-5">
-                <h3 className="font-semibold">Personal Site</h3>
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold">Personal Site</h3>
+                  <a
+                    href="https://github.com/austinhogan11/personal-site"
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label="Personal Site repository"
+                    title="View repository on GitHub"
+                    className="group inline-grid place-items-center w-9 h-9 rounded-md text-muted transition-shadow transition-colors border border-zinc-400 dark:border-zinc-500 hover:text-blue-900 dark:hover:text-amber-200 hover:border-blue-900 dark:hover:border-amber-200 active:border-blue-900 dark:active:border-amber-200 focus:outline-none focus:ring-0 focus:shadow-none hover:shadow-[0_0_10px_rgba(30,58,138,0.6)] dark:hover:shadow-[0_0_12px_rgba(253,230,138,0.6)]"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 transition-colors group-hover:text-blue-900 dark:group-hover:text-amber-200 group-hover:drop-shadow-[0_0_8px_rgba(30,58,138,0.5)] dark:group-hover:drop-shadow-[0_0_8px_rgba(253,230,138,0.7)]">
+                      <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2.1c-3.2.7-3.9-1.5-3.9-1.5-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.6 1 1.6 1 .9 1.6 2.5 1.1 3.1.9.1-.7.3-1.1.6-1.4-2.6-.3-5.4-1.3-5.4-5.9 0-1.3.5-2.4 1.2-3.3-.1-.3-.5-1.6.1-3.2 0 0 1-.3 3.4 1.2a11.7 11.7 0 0 1 6.2 0c2.4-1.5 3.4-1.2 3.4-1.2.6 1.6.2 2.9.1 3.2.8.9 1.2 2 1.2 3.3 0 4.6-2.8 5.6-5.4 5.9.4.3.7.9.7 1.9v2.9c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.65 18.35.5 12 .5z" />
+                    </svg>
+                  </a>
+                </div>
                 <p className="mt-2 text-sm text-muted">
                   Vite + React site styled with Tailwind CSS. Deployed via static hosting or container — easy to extend with blog, notes, and project write-ups.
                 </p>
@@ -447,10 +465,10 @@ export default function App() {
                       target="_blank"
                       rel="noreferrer"
                       aria-label="Text Marks the Spot GitHub repository"
-                      className="ml-2 inline-flex items-center align-middle text-muted transition-colors hover:text-blue-900 dark:hover:text-amber-200"
+                      className="ml-2 inline-flex items-center align-middle text-muted transition-colors group hover:text-blue-900 dark:hover:text-amber-200 hover:drop-shadow-[0_0_8px_rgba(30,58,138,0.5)] dark:hover:drop-shadow-[0_0_8px_rgba(253,230,138,0.7)]"
                       title="View repository on GitHub"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 transition-colors group-hover:text-blue-900 dark:group-hover:text-amber-200 group-hover:drop-shadow-[0_0_8px_rgba(30,58,138,0.5)] dark:group-hover:drop-shadow-[0_0_8px_rgba(253,230,138,0.7)]">
                         <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2.1c-3.2.7-3.9-1.5-3.9-1.5-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.6 1 1.6 1 .9 1.6 2.5 1.1 3.1.9.1-.7.3-1.1.6-1.4-2.6-.3-5.4-1.3-5.4-5.9 0-1.3.5-2.4 1.2-3.3-.1-.3-.5-1.6.1-3.2 0 0 1-.3 3.4 1.2a11.7 11.7 0 0 1 6.2 0c2.4-1.5 3.4-1.2 3.4-1.2.6 1.6.2 2.9.1 3.2.8.9 1.2 2 1.2 3.3 0 4.6-2.8 5.6-5.4 5.9.4.3.7.9.7 1.9v2.9c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.65 18.35.5 12 .5z" />
                       </svg>
                     </a>
@@ -468,7 +486,7 @@ export default function App() {
               Running, strength training, cooking, reading — and building small tools that make life easier.
             </p>
           </section>
-          <hr className="border-t border-token/40 mx-auto max-w-[960px]" />
+          <hr className="border-t border-token/40 mx-auto max-w-[1100px]" />
 
           {/* Contact */}
           <section id="contact" className="mx-auto max-w-6xl px-4 py-12 sm:py-16 scroll-mt-24">
