@@ -263,12 +263,18 @@ export default function App() {
         <main className="pb-16 mx-auto max-w-[1100px] px-4">
           <ScrollSpyTopNav />
           {/* Hero */}
-          <section id="top" className="mx-auto max-w-6xl px-4 py-16 sm:py-24 scroll-mt-24">
+          <section id="top" className="mx-auto max-w-6xl px-4 pt-16 sm:pt-24 pb-8 sm:pb-10 scroll-mt-24">
             <div className="grid gap-10 md:grid-cols-3 md:gap-12 items-start">
               <div className="md:col-span-2">
                 <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight">
                   <span className="block text-fg">Austin Hogan</span>
-                  <span className="block bg-clip-text text-transparent bg-gradient-to-r from-fuchsia-500 to-sky-500">Software Engineer &amp; Builder</span>
+                  <span className="block bg-clip-text text-transparent
+                    bg-gradient-to-r from-indigo-400 via-indigo-300 to-sky-400
+                    dark:from-fuchsia-400 dark:via-violet-300 dark:to-sky-400
+                    leading-[1.15] sm:leading-[1.1] pb-1
+                  ">
+                    Software Engineer &amp; Builder
+                  </span>
                 </h1>
                 <p className="mt-4 text-lg text-muted">
                   Cloud DevOps Engineer. Building the CHSN Running Platform. Running Coach.
@@ -276,8 +282,18 @@ export default function App() {
 
 
                 <div className="mt-8 flex gap-3">
-                  <a href="#projects" className="btn-primary ring-token">View Projects</a>
-                  <a href="#contact" className="btn-ghost">Get in touch</a>
+                  <a
+                    href="#projects"
+                    className="inline-flex items-center gap-2 rounded-xl px-5 py-3 font-medium text-zinc-50 bg-[#38bdf8] hover:bg-[#0ea5e9] shadow-[inset_0_-2px_0_rgba(0,0,0,.15)] hover:shadow-[0_0_18px_rgba(56,189,248,.35)] transition-all focus:outline-none"
+                  >
+                    View Projects
+                  </a>
+                  <a
+                    href="#contact"
+                    className="inline-flex items-center gap-2 rounded-xl px-5 py-3 font-medium border border-token text-fg bg-transparent hover:border-[#1e3a8a] hover:text-[#1e3a8a] dark:hover:border-amber-200 dark:hover:text-amber-200 hover:shadow-[0_0_14px_rgba(30,58,138,.35)] dark:hover:shadow-[0_0_16px_rgba(253,230,138,.4)] transition-all focus:outline-none"
+                  >
+                    Get in touch
+                  </a>
                 </div>
               </div>
 
@@ -496,13 +512,26 @@ export default function App() {
                 Email me or reach out on LinkedIn. I’m happy to chat about roles, projects, or collaboration.
               </p>
               <div className="mt-4 flex flex-wrap gap-3 text-sm">
-                <a href="mailto:austinhogan15@gmail.com" className="btn-primary ring-token">
+                <a
+                  href="mailto:austinhogan15@gmail.com"
+                  className="inline-flex items-center gap-2 rounded-xl px-5 py-3 font-medium text-zinc-50 bg-[#38bdf8] hover:bg-[#0ea5e9] shadow-[inset_0_-2px_0_rgba(0,0,0,.15)] hover:shadow-[0_0_18px_rgba(56,189,248,.35)] transition-all focus:outline-none"
+                >
                   Email
                 </a>
-                <a href="https://www.linkedin.com/in/austin-hogan-663164151/" target="_blank" rel="noreferrer" className="btn-ghost">
+                <a
+                  href="https://www.linkedin.com/in/austin-hogan-663164151/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 rounded-xl px-5 py-3 font-medium border border-token text-fg bg-transparent hover:border-[#1e3a8a] hover:text-[#1e3a8a] dark:hover:border-amber-200 dark:hover:text-amber-200 hover:shadow-[0_0_14px_rgba(30,58,138,.35)] dark:hover:shadow-[0_0_16px_rgba(253,230,138,.4)] transition-all focus:outline-none"
+                >
                   LinkedIn
                 </a>
-                <a href="https://github.com/austinhogan11" target="_blank" rel="noreferrer" className="btn-ghost">
+                <a
+                  href="https://github.com/austinhogan11"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 rounded-xl px-5 py-3 font-medium border border-token text-fg bg-transparent hover:border-[#1e3a8a] hover:text-[#1e3a8a] dark:hover:border-amber-200 dark:hover:text-amber-200 hover:shadow-[0_0_14px_rgba(30,58,138,.35)] dark:hover:shadow-[0_0_16px_rgba(253,230,138,.4)] transition-all focus:outline-none"
+                >
                   GitHub
                 </a>
               </div>
