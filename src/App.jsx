@@ -267,8 +267,8 @@ export default function App() {
             {/* soft background glow accents */}
             <div aria-hidden className="pointer-events-none absolute -top-10 -left-20 h-72 w-72 rounded-full bg-gradient-to-br from-sky-500/10 via-fuchsia-500/10 to-transparent blur-2xl" />
             <div aria-hidden className="pointer-events-none absolute -bottom-12 -right-16 h-72 w-72 rounded-full bg-gradient-to-tr from-amber-200/10 via-sky-400/10 to-transparent blur-2xl" />
-            <div className="grid gap-10 md:grid-cols-3 md:gap-12 items-start">
-              <div className="md:col-span-2 relative z-[1]">
+            <div className="grid gap-10 md:grid-cols-[1.65fr_1.1fr] md:gap-12 items-start">
+              <div className="relative z-[1]">
                 <h1 className="text-[40px] sm:text-5xl md:text-6xl font-extrabold tracking-tight">
                   <span className="block text-fg">Austin Hogan</span>
                   <span className="relative inline-block">
@@ -320,15 +320,58 @@ export default function App() {
               </div>
 
               {/* Quick details card */}
-              <aside className="card p-4">
-                <h2 className="font-semibold">At a glance</h2>
-                <ul className="mt-3 space-y-2 text-sm text-muted">
-                  <li>- Location: Atlanta, GA</li>
-                  <li>- Email: <a href="mailto:austinhogan15@gmail.com" className="hover:underline">austinhogan15@gmail.com</a></li>
-                  <li>- Studying: <a href="https://roadmap.sh/devops" target="_blank" rel="noreferrer" className="hover:underline">DevOps on Roadmap.sh</a></li>
-                  <li>- Reading: <span className="italic">Go One More</span> by Nick Bare</li>
-                  <li>- Duolingo Spanish Streak: <span className="font-semibold">{duoStreak}</span> days</li>
-                </ul>
+              <aside className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 md:p-6">
+                {/* gentle radial behind the title */}
+                <div aria-hidden className="pointer-events-none absolute -top-24 -right-24 h-64 w-64 rounded-full bg-gradient-to-tr from-sky-400/10 via-fuchsia-400/10 to-transparent blur-3xl" />
+
+                <h2 className="font-semibold tracking-wide">At a glance</h2>
+
+                <dl className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 text-sm">
+                  <div>
+                    <dt className="text-muted">Location</dt>
+                    <dd className="text-fg">Atlanta, GA</dd>
+                  </div>
+
+                  <div>
+                    <dt className="text-muted">Email</dt>
+                    <dd>
+                      <a
+                        href="mailto:austinhogan15@gmail.com"
+                        className="text-fg underline underline-offset-2 decoration-transparent hover:decoration-current whitespace-nowrap"
+                      >
+                        austinhogan15@gmail.com
+                      </a>
+                    </dd>
+                  </div>
+
+                  <div>
+                    <dt className="text-muted">Studying</dt>
+                    <dd>
+                      <a href="https://roadmap.sh/devops" target="_blank" rel="noreferrer"
+                         className="text-fg underline decoration-transparent hover:decoration-current">
+                        DevOps on Roadmap.sh
+                      </a>
+                    </dd>
+                  </div>
+
+                  <div>
+                    <dt className="text-muted">Reading</dt>
+                    <dd><span className="italic">Go One More</span> by Nick Bare</dd>
+                  </div>
+
+                  <div className="sm:col-span-2 pt-2 mt-1 border-t border-token/60">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
+                      <div>
+                        <dt className="text-muted">Duolingo Spanish Streak</dt>
+                        <dd className="text-fg"><span className="font-semibold">{duoStreak}</span> days</dd>
+                      </div>
+                      <div>
+                        <dt className="text-muted">Training for</dt>
+                        <dd className="text-fg">Sub‑3 Hour Marathon</dd>
+                      </div>
+                    </div>
+                  </div>
+                </dl>
               </aside>
             </div>
           </section>
@@ -338,7 +381,7 @@ export default function App() {
           <section id="experience" className="mx-auto max-w-6xl px-4 py-12 sm:py-16 scroll-mt-24">
             <h2 className="text-2xl font-bold tracking-tight">Experience</h2>
             <div className="mt-6 space-y-4">
-              <div className="card p-5">
+              <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5">
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="font-semibold">Software Engineer (Cloud DevOps / Platform)</h3>
@@ -381,7 +424,7 @@ export default function App() {
           <section id="projects" className="mx-auto max-w-6xl px-4 py-12 sm:py-16 scroll-mt-24">
             <h2 className="text-2xl font-bold tracking-tight">Projects</h2>
             <div className="mt-6 grid gap-6 sm:grid-cols-2">
-              <div className="card p-5">
+              <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5">
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold">CHSN Running Platform</h3>
                   <a
@@ -445,7 +488,7 @@ export default function App() {
                 </details>
               </div>
 
-              <div className="card p-5">
+              <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5">
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold">Personal Site</h3>
                   <a
@@ -477,7 +520,7 @@ export default function App() {
           {/* Education */}
           <section id="education" className="mx-auto max-w-6xl px-4 py-12 sm:py-16 scroll-mt-24">
             <h2 className="text-2xl font-bold tracking-tight">Education</h2>
-            <div className="mt-6 card p-5">
+            <div className="mt-6 relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5">
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-xl font-semibold">Kennesaw State University</h3>
@@ -528,7 +571,7 @@ export default function App() {
 
           {/* Contact */}
           <section id="contact" className="mx-auto max-w-6xl px-4 py-12 sm:py-16 scroll-mt-24">
-            <div className="card p-6">
+            <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-6">
               <h2 className="text-2xl font-bold tracking-tight">Let’s work together</h2>
               <p className="mt-2 text-sm text-muted">
                 Email me or reach out on LinkedIn. I’m happy to chat about roles, projects, or collaboration.
