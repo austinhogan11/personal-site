@@ -263,34 +263,56 @@ export default function App() {
         <main className="pb-16 mx-auto max-w-[1100px] px-4">
           <ScrollSpyTopNav />
           {/* Hero */}
-          <section id="top" className="mx-auto max-w-6xl px-4 pt-16 sm:pt-24 pb-8 sm:pb-10 scroll-mt-24">
+          <section id="top" className="relative mx-auto max-w-6xl px-4 pt-16 sm:pt-24 pb-8 sm:pb-10 scroll-mt-24">
+            {/* soft background glow accents */}
+            <div aria-hidden className="pointer-events-none absolute -top-10 -left-20 h-72 w-72 rounded-full bg-gradient-to-br from-sky-500/10 via-fuchsia-500/10 to-transparent blur-2xl" />
+            <div aria-hidden className="pointer-events-none absolute -bottom-12 -right-16 h-72 w-72 rounded-full bg-gradient-to-tr from-amber-200/10 via-sky-400/10 to-transparent blur-2xl" />
             <div className="grid gap-10 md:grid-cols-3 md:gap-12 items-start">
-              <div className="md:col-span-2">
-                <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight">
+              <div className="md:col-span-2 relative z-[1]">
+                <h1 className="text-[40px] sm:text-5xl md:text-6xl font-extrabold tracking-tight">
                   <span className="block text-fg">Austin Hogan</span>
-                  <span className="block bg-clip-text text-transparent
-                    bg-gradient-to-r from-indigo-400 via-indigo-300 to-sky-400
-                    dark:from-fuchsia-400 dark:via-violet-300 dark:to-sky-400
-                    leading-[1.15] sm:leading-[1.1] pb-1
-                  ">
-                    Software Engineer &amp; Builder
+                  <span className="relative inline-block">
+                  <span className="relative z-10 block bg-clip-text text-transparent
+                    bg-gradient-to-r from-indigo-300 via-indigo-200 to-sky-300
+                    dark:from-fuchsia-300 dark:via-violet-200 dark:to-sky-300
+                    leading-[1.12] sm:leading-[1.08] pb-1">
+                      Software Engineer &amp; Builder
+                    </span>
+                  {/* subtle gradient underline */}
+                  <span
+                    aria-hidden
+                    className="absolute inset-x-0 -bottom-[6px] h-[2px] rounded-full bg-gradient-to-r from-indigo-300/20 via-indigo-200/20 to-sky-300/20 dark:from-fuchsia-300/25 dark:via-violet-200/25 dark:to-sky-300/25 relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/5 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity"
+                  />
                   </span>
                 </h1>
-                <p className="mt-4 text-lg text-muted">
-                  Cloud DevOps Engineer. Building the CHSN Running Platform. Running Coach.
+              <div className="mt-5 max-w-3xl space-y-2 pl-4 border-l border-blue-900/20 dark:border-amber-200/25">
+                <p className="text-[18px] md:text-[19px] leading-[1.55] font-medium text-white">Cloud DevOps Engineer for Macy’s.</p>
+                <p className="text-[18px] md:text-[19px] leading-[1.55] font-medium text-white">Building CHSN Running Platform.</p>
+                <p className="text-[18px] md:text-[19px] leading-[1.55] font-medium text-white">
+                  Runner &amp; Coach at{' '}
+                  <a
+                    href="https://www.instagram.com/chsnrunning/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="group inline-flex items-baseline underline decoration-transparent hover:decoration-current transition-[text-decoration-color]"
+                  >
+                    CHSN Running
+                    <span className="inline-block w-0 overflow-hidden opacity-0 -translate-x-0 group-hover:w-3 group-hover:opacity-100 group-hover:translate-x-0 transition-all">↗</span>
+                  </a>.
                 </p>
+              </div>
 
 
                 <div className="mt-8 flex gap-3">
                   <a
                     href="#projects"
-                    className="inline-flex items-center gap-2 rounded-xl px-5 py-3 font-medium text-zinc-50 bg-[#38bdf8] hover:bg-[#0ea5e9] shadow-[inset_0_-2px_0_rgba(0,0,0,.15)] hover:shadow-[0_0_18px_rgba(56,189,248,.35)] transition-all focus:outline-none"
+                    className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 font-medium text-white bg-[#38bdf8] hover:bg-[#0ea5e9] shadow-[inset_0_-2px_0_rgba(0,0,0,.15)] hover:shadow-[0_0_18px_rgba(56,189,248,.35)] transition-all focus:outline-none dark:outline dark:outline-1 dark:outline-sky-300/30"
                   >
                     View Projects
                   </a>
                   <a
                     href="#contact"
-                    className="inline-flex items-center gap-2 rounded-xl px-5 py-3 font-medium border border-token text-fg bg-transparent hover:border-[#1e3a8a] hover:text-[#1e3a8a] dark:hover:border-amber-200 dark:hover:text-amber-200 hover:shadow-[0_0_14px_rgba(30,58,138,.35)] dark:hover:shadow-[0_0_16px_rgba(253,230,138,.4)] transition-all focus:outline-none"
+                    className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 font-medium border border-token text-white bg-transparent hover:border-[#1e3a8a] hover:text-white dark:hover:border-amber-200 dark:hover:text-white hover:shadow-[0_0_14px_rgba(30,58,138,.35)] dark:hover:shadow-[0_0_16px_rgba(253,230,138,.4)] transition-all focus:outline-none"
                   >
                     Get in touch
                   </a>
@@ -514,7 +536,7 @@ export default function App() {
               <div className="mt-4 flex flex-wrap gap-3 text-sm">
                 <a
                   href="mailto:austinhogan15@gmail.com"
-                  className="inline-flex items-center gap-2 rounded-xl px-5 py-3 font-medium text-zinc-50 bg-[#38bdf8] hover:bg-[#0ea5e9] shadow-[inset_0_-2px_0_rgba(0,0,0,.15)] hover:shadow-[0_0_18px_rgba(56,189,248,.35)] transition-all focus:outline-none"
+                  className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 font-medium text-white bg-[#38bdf8] hover:bg-[#0ea5e9] shadow-[inset_0_-2px_0_rgba(0,0,0,.15)] hover:shadow-[0_0_18px_rgba(56,189,248,.35)] transition-all focus:outline-none dark:outline dark:outline-1 dark:outline-sky-300/30"
                 >
                   Email
                 </a>
@@ -522,7 +544,7 @@ export default function App() {
                   href="https://www.linkedin.com/in/austin-hogan-663164151/"
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-xl px-5 py-3 font-medium border border-token text-fg bg-transparent hover:border-[#1e3a8a] hover:text-[#1e3a8a] dark:hover:border-amber-200 dark:hover:text-amber-200 hover:shadow-[0_0_14px_rgba(30,58,138,.35)] dark:hover:shadow-[0_0_16px_rgba(253,230,138,.4)] transition-all focus:outline-none"
+                  className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 font-medium border border-token text-fg bg-transparent hover:border-[#1e3a8a] hover:text-[#1e3a8a] dark:hover:border-amber-200 dark:hover:text-amber-200 hover:shadow-[0_0_14px_rgba(30,58,138,.35)] dark:hover:shadow-[0_0_16px_rgba(253,230,138,.4)] transition-all focus:outline-none"
                 >
                   LinkedIn
                 </a>
@@ -530,7 +552,7 @@ export default function App() {
                   href="https://github.com/austinhogan11"
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-xl px-5 py-3 font-medium border border-token text-fg bg-transparent hover:border-[#1e3a8a] hover:text-[#1e3a8a] dark:hover:border-amber-200 dark:hover:text-amber-200 hover:shadow-[0_0_14px_rgba(30,58,138,.35)] dark:hover:shadow-[0_0_16px_rgba(253,230,138,.4)] transition-all focus:outline-none"
+                  className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 font-medium border border-token text-fg bg-transparent hover:border-[#1e3a8a] hover:text-[#1e3a8a] dark:hover:border-amber-200 dark:hover:text-amber-200 hover:shadow-[0_0_14px_rgba(30,58,138,.35)] dark:hover:shadow-[0_0_16px_rgba(253,230,138,.4)] transition-all focus:outline-none"
                 >
                   GitHub
                 </a>
