@@ -382,6 +382,9 @@ export default function App() {
             <h2 className="text-2xl font-bold tracking-tight">Experience</h2>
             <div className="mt-6 space-y-4">
               <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5">
+                {/* soft background glow accents */}
+                <div aria-hidden className="pointer-events-none absolute -top-10 -left-16 h-40 w-40 rounded-full bg-gradient-to-br from-sky-500/10 via-fuchsia-500/10 to-transparent blur-2xl" />
+                <div aria-hidden className="pointer-events-none absolute -bottom-12 -right-16 h-40 w-40 rounded-full bg-gradient-to-tr from-amber-200/10 via-sky-400/10 to-transparent blur-2xl" />
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="font-semibold">Software Engineer (Cloud DevOps / Platform)</h3>
@@ -425,6 +428,9 @@ export default function App() {
             <h2 className="text-2xl font-bold tracking-tight">Projects</h2>
             <div className="mt-6 grid gap-6 sm:grid-cols-2">
               <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5">
+                {/* soft background glow accents */}
+                <div aria-hidden className="pointer-events-none absolute -top-10 -left-16 h-40 w-40 rounded-full bg-gradient-to-br from-sky-500/10 via-fuchsia-500/10 to-transparent blur-2xl" />
+                <div aria-hidden className="pointer-events-none absolute -bottom-12 -right-16 h-40 w-40 rounded-full bg-gradient-to-tr from-amber-200/10 via-sky-400/10 to-transparent blur-2xl" />
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold">CHSN Running Platform</h3>
                   <a
@@ -489,6 +495,9 @@ export default function App() {
               </div>
 
               <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5">
+                {/* soft background glow accents */}
+                <div aria-hidden className="pointer-events-none absolute -top-10 -left-16 h-40 w-40 rounded-full bg-gradient-to-br from-sky-500/10 via-fuchsia-500/10 to-transparent blur-2xl" />
+                <div aria-hidden className="pointer-events-none absolute -bottom-12 -right-16 h-40 w-40 rounded-full bg-gradient-to-tr from-amber-200/10 via-sky-400/10 to-transparent blur-2xl" />
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold">Personal Site</h3>
                   <a
@@ -521,6 +530,9 @@ export default function App() {
           <section id="education" className="mx-auto max-w-6xl px-4 py-12 sm:py-16 scroll-mt-24">
             <h2 className="text-2xl font-bold tracking-tight">Education</h2>
             <div className="mt-6 relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5">
+              {/* soft background glow accents */}
+              <div aria-hidden className="pointer-events-none absolute -top-10 -left-16 h-40 w-40 rounded-full bg-gradient-to-br from-sky-500/10 via-fuchsia-500/10 to-transparent blur-2xl" />
+              <div aria-hidden className="pointer-events-none absolute -bottom-12 -right-16 h-40 w-40 rounded-full bg-gradient-to-tr from-amber-200/10 via-sky-400/10 to-transparent blur-2xl" />
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-xl font-semibold">Kennesaw State University</h3>
@@ -572,6 +584,9 @@ export default function App() {
           {/* Contact */}
           <section id="contact" className="mx-auto max-w-6xl px-4 py-12 sm:py-16 scroll-mt-24">
             <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-6">
+              {/* soft background glow accents */}
+              <div aria-hidden className="pointer-events-none absolute -top-10 -left-16 h-40 w-40 rounded-full bg-gradient-to-br from-sky-500/10 via-fuchsia-500/10 to-transparent blur-2xl" />
+              <div aria-hidden className="pointer-events-none absolute -bottom-12 -right-16 h-40 w-40 rounded-full bg-gradient-to-tr from-amber-200/10 via-sky-400/10 to-transparent blur-2xl" />
               <h2 className="text-2xl font-bold tracking-tight">Let’s work together</h2>
               <p className="mt-2 text-sm text-muted">
                 Email me or reach out on LinkedIn. I’m happy to chat about roles, projects, or collaboration.
