@@ -1,4 +1,52 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
+function GlowAccents({ size = 160 }) {
+  // Predefined gradient combos (kept static so Tailwind includes them)
+  const topCombos = [
+    "bg-gradient-to-br from-sky-500/10 via-fuchsia-500/10 to-transparent",
+    "bg-gradient-to-br from-violet-500/10 via-sky-400/10 to-transparent",
+    "bg-gradient-to-br from-indigo-500/10 via-rose-500/10 to-transparent",
+    "bg-gradient-to-br from-cyan-500/10 via-blue-500/10 to-transparent",
+  ];
+  const bottomCombos = [
+    "bg-gradient-to-tr from-amber-200/10 via-sky-400/10 to-transparent",
+    "bg-gradient-to-tr from-emerald-300/10 via-cyan-400/10 to-transparent",
+    "bg-gradient-to-tr from-fuchsia-300/10 via-indigo-400/10 to-transparent",
+    "bg-gradient-to-tr from-rose-300/10 via-violet-400/10 to-transparent",
+  ];
+
+  // Randomize once per mount
+  const pick = useMemo(() => ({
+    topIdx: Math.floor(Math.random() * topCombos.length),
+    botIdx: Math.floor(Math.random() * bottomCombos.length),
+    // slight jitter for position/size so cards vary subtly
+    topOffset: {
+      top: -10 - Math.floor(Math.random() * 8), // px
+      left: -16 - Math.floor(Math.random() * 10),
+    },
+    botOffset: {
+      bottom: -12 - Math.floor(Math.random() * 8),
+      right: -16 - Math.floor(Math.random() * 10),
+    },
+    scale: 1 + Math.random() * 0.25, // 1.0 - 1.25
+  }), []);
+
+  const dim = size * pick.scale;
+
+  return (
+    <>
+      <div
+        aria-hidden
+        className={`pointer-events-none absolute rounded-full blur-2xl ${topCombos[pick.topIdx]}`}
+        style={{ top: `${pick.topOffset.top}px`, left: `${pick.topOffset.left}px`, width: `${dim}px`, height: `${dim}px` }}
+      />
+      <div
+        aria-hidden
+        className={`pointer-events-none absolute rounded-full blur-2xl ${bottomCombos[pick.botIdx]}`}
+        style={{ bottom: `${pick.botOffset.bottom}px`, right: `${pick.botOffset.right}px`, width: `${dim}px`, height: `${dim}px` }}
+      />
+    </>
+  );
+}
 // Personal site scaffold using TailwindCSS
 // Light/Dark theming via CSS variables defined in index.css
 
@@ -320,7 +368,7 @@ export default function App() {
               </div>
 
               {/* Quick details card */}
-              <aside className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 md:p-6">
+              <aside className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 md:p-6 transition-shadow transition-colors hover:border-sky-300 dark:hover:border-amber-200 hover:ring-1 hover:ring-sky-300/40 dark:hover:ring-amber-200/40 hover:shadow-[0_0_16px_rgba(125,211,252,.35)] dark:hover:shadow-[0_0_18px_rgba(253,230,138,.45)]">
                 {/* gentle radial behind the title */}
                 <div aria-hidden className="pointer-events-none absolute -top-24 -right-24 h-64 w-64 rounded-full bg-gradient-to-tr from-sky-400/10 via-fuchsia-400/10 to-transparent blur-3xl" />
 
@@ -372,51 +420,54 @@ export default function App() {
                     </div>
                   </div>
                 </dl>
+                <GlowAccents size={180} />
               </aside>
             </div>
           </section>
           <hr className="border-t border-token/40 mx-auto max-w-[1100px]" />
 
           {/* Experience */}
-          <section id="experience" className="mx-auto max-w-6xl px-4 py-12 sm:py-16 scroll-mt-24">
-            <h2 className="text-2xl font-bold tracking-tight">Experience</h2>
-            <div className="mt-6 space-y-4">
-              <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5">
-                {/* soft background glow accents */}
-                <div aria-hidden className="pointer-events-none absolute -top-10 -left-16 h-40 w-40 rounded-full bg-gradient-to-br from-sky-500/10 via-fuchsia-500/10 to-transparent blur-2xl" />
-                <div aria-hidden className="pointer-events-none absolute -bottom-12 -right-16 h-40 w-40 rounded-full bg-gradient-to-tr from-amber-200/10 via-sky-400/10 to-transparent blur-2xl" />
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-semibold">Software Engineer (Cloud DevOps / Platform)</h3>
-                    <p className="text-base text-muted">Macy’s Inc.</p>
+          <section id="experience" className="relative mx-auto max-w-6xl px-4 py-12 sm:py-16 scroll-mt-24">
+            <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
+              <GlowAccents size={320} />
+            </div>
+            <div className="relative z-[1]">
+              <h2 className="text-2xl font-bold tracking-tight">Experience</h2>
+              <div className="mt-6 space-y-4">
+                <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-shadow transition-colors hover:border-sky-300 dark:hover:border-amber-200 hover:ring-1 hover:ring-sky-300/40 dark:hover:ring-amber-200/40 hover:shadow-[0_0_16px_rgba(125,211,252,.35)] dark:hover:shadow-[0_0_18px_rgba(253,230,138,.45)]">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-semibold">Software Engineer (Cloud DevOps / Platform)</h3>
+                      <p className="text-base text-muted">Macy’s Inc.</p>
+                    </div>
+                    <div className="text-right">
+                      <span className="block text-sm text-muted">June 2021 – Present</span>
+                      <span className="block text-sm text-muted">Atlanta, GA</span>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <span className="block text-sm text-muted">June 2021 – Present</span>
-                    <span className="block text-sm text-muted">Atlanta, GA</span>
-                  </div>
-                </div>
-                <ul className="mt-2 list-disc pl-5 text-sm text-muted space-y-1">
-                  <li>Provisioned and managed scalable Google Cloud infrastructure using Terraform, ensuring repeatable, secure deployments for data-focused applications.</li>
-                  <li>Led 24/7 on-call incident response for production and non-production environments, reducing downtime and improving system reliability for data engineering teams.</li>
-                  <li>Deployed and maintained applications across Google Compute Engine and GKE clusters, supporting high availability and efficient containerized workloads.</li>
-                  <li>Automated CI/CD pipelines with Jenkins, accelerating release cycles and improving development workflows across multiple teams.</li>
-                  <li>Implemented cost optimization strategies in GCP, contributing to over $10M in annual cloud savings through rightsizing, monitoring, and resource cleanup.</li>
-                  <li>Mentored and onboarded 4 early career engineers and interns, accelerating their ramp-up and contributing to team knowledge growth.</li>
-                </ul>
-                <div className="mt-5 pt-4 border-t border-token">
-                  <h4 className="text-sm font-semibold">Skills &amp; Tools</h4>
-                  <ul className="mt-2 flex flex-wrap gap-2 text-sm text-muted">
-                    <li className="rounded bg-card border border-token px-2 py-0.5">Cloud DevOps &amp; Infrastructure (GCP)</li>
-                    <li className="rounded bg-card border border-token px-2 py-0.5">Application &amp; Infrastructure Monitoring</li>
-                    <li className="rounded bg-card border border-token px-2 py-0.5">Cloud Cost Optimization</li>
-                    <li className="rounded bg-card border border-token px-2 py-0.5">IaC (Terraform)</li>
-                    <li className="rounded bg-card border border-token px-2 py-0.5">Linux</li>
-                    <li className="rounded bg-card border border-token px-2 py-0.5">Git / GitLab</li>
-                    <li className="rounded bg-card border border-token px-2 py-0.5">CI/CD (Jenkins &amp; GitLab)</li>
-                    <li className="rounded bg-card border border-token px-2 py-0.5">Kubernetes / GKE</li>
-                    <li className="rounded bg-card border border-token px-2 py-0.5">Python</li>
-                    <li className="rounded bg-card border border-token px-2 py-0.5">Bash / Shell Scripting</li>
+                  <ul className="mt-2 list-disc pl-5 text-sm text-muted space-y-1">
+                    <li>Provisioned and managed scalable Google Cloud infrastructure using Terraform, ensuring repeatable, secure deployments for data-focused applications.</li>
+                    <li>Led 24/7 on-call incident response for production and non-production environments, reducing downtime and improving system reliability for data engineering teams.</li>
+                    <li>Deployed and maintained applications across Google Compute Engine and GKE clusters, supporting high availability and efficient containerized workloads.</li>
+                    <li>Automated CI/CD pipelines with Jenkins, accelerating release cycles and improving development workflows across multiple teams.</li>
+                    <li>Implemented cost optimization strategies in GCP, contributing to over $10M in annual cloud savings through rightsizing, monitoring, and resource cleanup.</li>
+                    <li>Mentored and onboarded 4 early career engineers and interns, accelerating their ramp-up and contributing to team knowledge growth.</li>
                   </ul>
+                  <div className="mt-5 pt-4 border-t border-token">
+                    <h4 className="text-sm font-semibold">Skills &amp; Tools</h4>
+                    <ul className="mt-2 flex flex-wrap gap-2 text-sm text-muted">
+                      <li className="rounded bg-card border border-token px-2 py-0.5">Cloud DevOps &amp; Infrastructure (GCP)</li>
+                      <li className="rounded bg-card border border-token px-2 py-0.5">Application &amp; Infrastructure Monitoring</li>
+                      <li className="rounded bg-card border border-token px-2 py-0.5">Cloud Cost Optimization</li>
+                      <li className="rounded bg-card border border-token px-2 py-0.5">IaC (Terraform)</li>
+                      <li className="rounded bg-card border border-token px-2 py-0.5">Linux</li>
+                      <li className="rounded bg-card border border-token px-2 py-0.5">Git / GitLab</li>
+                      <li className="rounded bg-card border border-token px-2 py-0.5">CI/CD (Jenkins &amp; GitLab)</li>
+                      <li className="rounded bg-card border border-token px-2 py-0.5">Kubernetes / GKE</li>
+                      <li className="rounded bg-card border border-token px-2 py-0.5">Python</li>
+                      <li className="rounded bg-card border border-token px-2 py-0.5">Bash / Shell Scripting</li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
@@ -424,102 +475,101 @@ export default function App() {
           <hr className="border-t border-token/40 mx-auto max-w-[1100px]" />
 
           {/* Projects */}
-          <section id="projects" className="mx-auto max-w-6xl px-4 py-12 sm:py-16 scroll-mt-24">
-            <h2 className="text-2xl font-bold tracking-tight">Projects</h2>
-            <div className="mt-6 grid gap-6 sm:grid-cols-2">
-              <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5">
-                {/* soft background glow accents */}
-                <div aria-hidden className="pointer-events-none absolute -top-10 -left-16 h-40 w-40 rounded-full bg-gradient-to-br from-sky-500/10 via-fuchsia-500/10 to-transparent blur-2xl" />
-                <div aria-hidden className="pointer-events-none absolute -bottom-12 -right-16 h-40 w-40 rounded-full bg-gradient-to-tr from-amber-200/10 via-sky-400/10 to-transparent blur-2xl" />
-                <div className="flex items-center justify-between">
-                  <h3 className="font-semibold">CHSN Running Platform</h3>
-                  <a
-                    href="https://github.com/austinhogan11/chsn-running-platform"
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label="CHSN Running Platform repository"
-                    title="View repository on GitHub"
-                    className="group inline-grid place-items-center w-9 h-9 rounded-md text-muted transition-shadow transition-colors border border-zinc-400 dark:border-zinc-500 hover:text-blue-900 dark:hover:text-amber-200 hover:border-blue-900 dark:hover:border-amber-200 active:border-blue-900 dark:active:border-amber-200 focus:outline-none focus:ring-0 focus:shadow-none hover:shadow-[0_0_10px_rgba(30,58,138,0.6)] dark:hover:shadow-[0_0_12px_rgba(253,230,138,0.6)]"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="w-5 h-5 transition-colors group-hover:text-blue-900 dark:group-hover:text-amber-200 group-hover:drop-shadow-[0_0_8px_rgba(30,58,138,0.5)] dark:group-hover:drop-shadow-[0_0_8px_rgba(253,230,138,0.7)]"
+          <section id="projects" className="relative mx-auto max-w-6xl px-4 py-12 sm:py-16 scroll-mt-24">
+            <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
+              <GlowAccents size={340} />
+            </div>
+            <div className="relative z-[1]">
+              <h2 className="text-2xl font-bold tracking-tight">Projects</h2>
+              <div className="mt-6 grid gap-6 sm:grid-cols-2">
+                <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-shadow transition-colors hover:border-sky-300 dark:hover:border-amber-200 hover:ring-1 hover:ring-sky-300/40 dark:hover:ring-amber-200/40 hover:shadow-[0_0_16px_rgba(125,211,252,.35)] dark:hover:shadow-[0_0_18px_rgba(253,230,138,.45)]">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-semibold">CHSN Running Platform</h3>
+                    <a
+                      href="https://github.com/austinhogan11/chsn-running-platform"
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label="CHSN Running Platform repository"
+                      title="View repository on GitHub"
+                      className="group inline-grid place-items-center w-9 h-9 rounded-md text-muted transition-shadow transition-colors border border-zinc-400 dark:border-zinc-500 hover:text-blue-900 dark:hover:text-amber-200 hover:border-blue-900 dark:hover:border-amber-200 active:border-blue-900 dark:active:border-amber-200 focus:outline-none focus:ring-0 focus:shadow-none hover:shadow-[0_0_10px_rgba(30,58,138,0.6)] dark:hover:shadow-[0_0_12px_rgba(253,230,138,0.6)]"
                     >
-                      <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2.1c-3.2.7-3.9-1.5-3.9-1.5-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.6 1 1.6 1 .9 1.6 2.5 1.1 3.1.9.1-.7.3-1.1.6-1.4-2.6-.3-5.4-1.3-5.4-5.9 0-1.3.5-2.4 1.2-3.3-.1-.3-.5-1.6.1-3.2 0 0 1-.3 3.4 1.2a11.7 11.7 0 0 1 6.2 0c2.4-1.5 3.4-1.2 3.4-1.2.6 1.6.2 2.9.1 3.2.8.9 1.2 2 1.2 3.3 0 4.6-2.8 5.6-5.4 5.9.4.3.7.9.7 1.9v2.9c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.65 18.35.5 12 .5z" />
-                    </svg>
-                  </a>
-                </div>
-
-                {/* Compact overview */}
-                <p className="mt-2 text-sm text-muted">
-                  Running training platform featuring a training log &amp; a pace calculator. Containerized with Docker and deployed on GCP Cloud Run via Terraform. Alternate deployment using GKE for greater scalability.
-                </p>
-
-                {/* Tech chips */}
-                <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-muted">
-                  <span className="rounded bg-card border border-token px-2 py-0.5">Python</span>
-                  <span className="rounded bg-card border border-token px-2 py-0.5">Docker</span>
-                  <span className="rounded bg-card border border-token px-2 py-0.5">GCP</span>
-                  <span className="rounded bg-card border border-token px-2 py-0.5">Cloud Run</span>
-                  <span className="rounded bg-card border border-token px-2 py-0.5">GKE</span>
-                  <span className="rounded bg-card border border-token px-2 py-0.5">Artifact Registry</span>
-                  <span className="rounded bg-card border border-token px-2 py-0.5">Terraform</span>
-                  <span className="rounded bg-card border border-token px-2 py-0.5">GitHub Actions</span>
-                </div>
-
-                {/* Expandable details */}
-                <details className="mt-4 text-sm">
-                  <summary className="cursor-pointer select-none text-muted transition-colors hover:text-blue-900 dark:hover:text-amber-200 hover:drop-shadow-[0_0_8px_rgba(30,58,138,0.5)] dark:hover:drop-shadow-[0_0_8px_rgba(253,230,138,0.6)]">
-                    More details
-                  </summary>
-                  <div className="mt-2 text-muted space-y-3">
-                    <div>
-                      <p className="font-medium text-fg">Features</p>
-                      <ul className="list-disc pl-5 space-y-1">
-                        <li>Training log to track and analyze runs.</li>
-                        <li>Running pace calculator.</li>
-                      </ul>
-                    </div>
-                    <div>
-                      <p className="font-medium text-fg">Upcoming</p>
-                      <ul className="list-disc pl-5 space-y-1">
-                        <li>User accounts with per-user training logs.</li>
-                        <li>Calendar view for lifting programs and cardio summaries.</li>
-                        <li>Coach/athlete sharing and dashboards.</li>
-                      </ul>
-                    </div>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        className="w-5 h-5 transition-colors group-hover:text-blue-900 dark:group-hover:text-amber-200 group-hover:drop-shadow-[0_0_8px_rgba(30,58,138,0.5)] dark:group-hover:drop-shadow-[0_0_8px_rgba(253,230,138,0.7)]"
+                      >
+                        <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2.1c-3.2.7-3.9-1.5-3.9-1.5-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.6 1 1.6 1 .9 1.6 2.5 1.1 3.1.9.1-.7.3-1.1.6-1.4-2.6-.3-5.4-1.3-5.4-5.9 0-1.3.5-2.4 1.2-3.3-.1-.3-.5-1.6.1-3.2 0 0 1-.3 3.4 1.2a11.7 11.7 0 0 1 6.2 0c2.4-1.5 3.4-1.2 3.4-1.2.6 1.6.2 2.9.1 3.2.8.9 1.2 2 1.2 3.3 0 4.6-2.8 5.6-5.4 5.9.4.3.7.9.7 1.9v2.9c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.65 18.35.5 12 .5z" />
+                      </svg>
+                    </a>
                   </div>
-                </details>
-              </div>
 
-              <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5">
-                {/* soft background glow accents */}
-                <div aria-hidden className="pointer-events-none absolute -top-10 -left-16 h-40 w-40 rounded-full bg-gradient-to-br from-sky-500/10 via-fuchsia-500/10 to-transparent blur-2xl" />
-                <div aria-hidden className="pointer-events-none absolute -bottom-12 -right-16 h-40 w-40 rounded-full bg-gradient-to-tr from-amber-200/10 via-sky-400/10 to-transparent blur-2xl" />
-                <div className="flex items-center justify-between">
-                  <h3 className="font-semibold">Personal Site</h3>
-                  <a
-                    href="https://github.com/austinhogan11/personal-site"
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label="Personal Site repository"
-                    title="View repository on GitHub"
-                    className="group inline-grid place-items-center w-9 h-9 rounded-md text-muted transition-shadow transition-colors border border-zinc-400 dark:border-zinc-500 hover:text-blue-900 dark:hover:text-amber-200 hover:border-blue-900 dark:hover:border-amber-200 active:border-blue-900 dark:active:border-amber-200 focus:outline-none focus:ring-0 focus:shadow-none hover:shadow-[0_0_10px_rgba(30,58,138,0.6)] dark:hover:shadow-[0_0_12px_rgba(253,230,138,0.6)]"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 transition-colors group-hover:text-blue-900 dark:group-hover:text-amber-200 group-hover:drop-shadow-[0_0_8px_rgba(30,58,138,0.5)] dark:group-hover:drop-shadow-[0_0_8px_rgba(253,230,138,0.7)]">
-                      <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2.1c-3.2.7-3.9-1.5-3.9-1.5-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.6 1 1.6 1 .9 1.6 2.5 1.1 3.1.9.1-.7.3-1.1.6-1.4-2.6-.3-5.4-1.3-5.4-5.9 0-1.3.5-2.4 1.2-3.3-.1-.3-.5-1.6.1-3.2 0 0 1-.3 3.4 1.2a11.7 11.7 0 0 1 6.2 0c2.4-1.5 3.4-1.2 3.4-1.2.6 1.6.2 2.9.1 3.2.8.9 1.2 2 1.2 3.3 0 4.6-2.8 5.6-5.4 5.9.4.3.7.9.7 1.9v2.9c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.65 18.35.5 12 .5z" />
-                    </svg>
-                  </a>
+                  {/* Compact overview */}
+                  <p className="mt-2 text-sm text-muted">
+                    Running training platform featuring a training log &amp; a pace calculator. Containerized with Docker and deployed on GCP Cloud Run via Terraform. Alternate deployment using GKE for greater scalability.
+                  </p>
+
+                  {/* Tech chips */}
+                  <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-muted">
+                    <span className="rounded bg-card border border-token px-2 py-0.5">Python</span>
+                    <span className="rounded bg-card border border-token px-2 py-0.5">Docker</span>
+                    <span className="rounded bg-card border border-token px-2 py-0.5">GCP</span>
+                    <span className="rounded bg-card border border-token px-2 py-0.5">Cloud Run</span>
+                    <span className="rounded bg-card border border-token px-2 py-0.5">GKE</span>
+                    <span className="rounded bg-card border border-token px-2 py-0.5">Artifact Registry</span>
+                    <span className="rounded bg-card border border-token px-2 py-0.5">Terraform</span>
+                    <span className="rounded bg-card border border-token px-2 py-0.5">GitHub Actions</span>
+                  </div>
+
+                  {/* Expandable details */}
+                  <details className="mt-4 text-sm">
+                    <summary className="cursor-pointer select-none text-muted transition-colors hover:text-blue-900 dark:hover:text-amber-200 hover:drop-shadow-[0_0_8px_rgba(30,58,138,0.5)] dark:hover:drop-shadow-[0_0_8px_rgba(253,230,138,0.6)]">
+                      More details
+                    </summary>
+                    <div className="mt-2 text-muted space-y-3">
+                      <div>
+                        <p className="font-medium text-fg">Features</p>
+                        <ul className="list-disc pl-5 space-y-1">
+                          <li>Training log to track and analyze runs.</li>
+                          <li>Running pace calculator.</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <p className="font-medium text-fg">Upcoming</p>
+                        <ul className="list-disc pl-5 space-y-1">
+                          <li>User accounts with per-user training logs.</li>
+                          <li>Calendar view for lifting programs and cardio summaries.</li>
+                          <li>Coach/athlete sharing and dashboards.</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </details>
                 </div>
-                <p className="mt-2 text-sm text-muted">
-                  Vite + React site styled with Tailwind CSS. Deployed via static hosting or container — easy to extend with blog, notes, and project write-ups.
-                </p>
-                <div className="mt-3 flex flex-wrap gap-2 text-xs text-muted">
-                  <span className="rounded bg-card border border-token px-2 py-0.5">React</span>
-                  <span className="rounded bg-card border border-token px-2 py-0.5">Tailwind</span>
-                  <span className="rounded bg-card border border-token px-2 py-0.5">Vite</span>
+
+                <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-shadow transition-colors hover:border-sky-300 dark:hover:border-amber-200 hover:ring-1 hover:ring-sky-300/40 dark:hover:ring-amber-200/40 hover:shadow-[0_0_16px_rgba(125,211,252,.35)] dark:hover:shadow-[0_0_18px_rgba(253,230,138,.45)]">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-semibold">Personal Site</h3>
+                    <a
+                      href="https://github.com/austinhogan11/personal-site"
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label="Personal Site repository"
+                      title="View repository on GitHub"
+                      className="group inline-grid place-items-center w-9 h-9 rounded-md text-muted transition-shadow transition-colors border border-zinc-400 dark:border-zinc-500 hover:text-blue-900 dark:hover:text-amber-200 hover:border-blue-900 dark:hover:border-amber-200 active:border-blue-900 dark:active:border-amber-200 focus:outline-none focus:ring-0 focus:shadow-none hover:shadow-[0_0_10px_rgba(30,58,138,0.6)] dark:hover:shadow-[0_0_12px_rgba(253,230,138,0.6)]"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 transition-colors group-hover:text-blue-900 dark:group-hover:text-amber-200 group-hover:drop-shadow-[0_0_8px_rgba(30,58,138,0.5)] dark:group-hover:drop-shadow-[0_0_8px_rgba(253,230,138,0.7)]">
+                        <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2.1c-3.2.7-3.9-1.5-3.9-1.5-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.6 1 1.6 1 .9 1.6 2.5 1.1 3.1.9.1-.7.3-1.1.6-1.4-2.6-.3-5.4-1.3-5.4-5.9 0-1.3.5-2.4 1.2-3.3-.1-.3-.5-1.6.1-3.2 0 0 1-.3 3.4 1.2a11.7 11.7 0 0 1 6.2 0c2.4-1.5 3.4-1.2 3.4-1.2.6 1.6.2 2.9.1 3.2.8.9 1.2 2 1.2 3.3 0 4.6-2.8 5.6-5.4 5.9.4.3.7.9.7 1.9v2.9c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.65 18.35.5 12 .5z" />
+                      </svg>
+                    </a>
+                  </div>
+                  <p className="mt-2 text-sm text-muted">
+                    Vite + React site styled with Tailwind CSS. Deployed via static hosting or container — easy to extend with blog, notes, and project write-ups.
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2 text-xs text-muted">
+                    <span className="rounded bg-card border border-token px-2 py-0.5">React</span>
+                    <span className="rounded bg-card border border-token px-2 py-0.5">Tailwind</span>
+                    <span className="rounded bg-card border border-token px-2 py-0.5">Vite</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -527,93 +577,102 @@ export default function App() {
           <hr className="border-t border-token/40 mx-auto max-w-[1100px]" />
 
           {/* Education */}
-          <section id="education" className="mx-auto max-w-6xl px-4 py-12 sm:py-16 scroll-mt-24">
-            <h2 className="text-2xl font-bold tracking-tight">Education</h2>
-            <div className="mt-6 relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5">
-              {/* soft background glow accents */}
-              <div aria-hidden className="pointer-events-none absolute -top-10 -left-16 h-40 w-40 rounded-full bg-gradient-to-br from-sky-500/10 via-fuchsia-500/10 to-transparent blur-2xl" />
-              <div aria-hidden className="pointer-events-none absolute -bottom-12 -right-16 h-40 w-40 rounded-full bg-gradient-to-tr from-amber-200/10 via-sky-400/10 to-transparent blur-2xl" />
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-xl font-semibold">Kennesaw State University</h3>
-                  <p className="italic text-sm text-muted">Bachelor of Science, Software Engineering</p>
-                  <p className="italic text-sm text-muted">Minor: Computer Science</p>
+          <section id="education" className="relative mx-auto max-w-6xl px-4 py-12 sm:py-16 scroll-mt-24">
+            <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
+              <GlowAccents size={320} />
+            </div>
+            <div className="relative z-[1]">
+              <h2 className="text-2xl font-bold tracking-tight">Education</h2>
+              <div className="mt-6 relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-shadow transition-colors hover:border-sky-300 dark:hover:border-amber-200 hover:ring-1 hover:ring-sky-300/40 dark:hover:ring-amber-200/40 hover:shadow-[0_0_16px_rgba(125,211,252,.35)] dark:hover:shadow-[0_0_18px_rgba(253,230,138,.45)]">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-xl font-semibold">Kennesaw State University</h3>
+                    <p className="italic text-sm text-muted">Bachelor of Science, Software Engineering</p>
+                    <p className="italic text-sm text-muted">Minor: Computer Science</p>
+                  </div>
+                  <div className="text-right text-sm text-muted">
+                    <p>2017 – 2021</p>
+                    <p><span className="italic">GPA: 3.58</span></p>
+                  </div>
                 </div>
-                <div className="text-right text-sm text-muted">
-                  <p>2017 – 2021</p>
-                  <p><span className="italic">GPA: 3.58</span></p>
+                <div className="mt-4">
+                  <h4 className="font-semibold text-sm">Courses &amp; Projects</h4>
+                  <ul className="mt-2 list-disc pl-5 text-sm text-muted space-y-1">
+                    <li>Programming Principles — Built a 3D Maze & Third‑Person Shooter in Unity (C#) to learn core programming concepts.</li>
+                    <li>Data Structures — Learned and implemented core data structures in C++.</li>
+                    <li>Software Testing — Practiced Test‑Driven Development (TDD) using Java.</li>
+                    <li>Software Project Management — Built a software project management system in Java.</li>
+                    <li>
+                      Software Engineering Capstone — Text Marks the Spot: geolocation‑based messaging mobile app (iOS/Android), built with Flutter.
+                      <a
+                        href="https://github.com/austinhogan11/text_marks_the_spot_app"
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label="Text Marks the Spot GitHub repository"
+                        className="ml-2 inline-flex items-center align-middle text-muted transition-colors group hover:text-blue-900 dark:hover:text-amber-200 hover:drop-shadow-[0_0_8px_rgba(30,58,138,0.5)] dark:hover:drop-shadow-[0_0_8px_rgba(253,230,138,0.7)]"
+                        title="View repository on GitHub"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 transition-colors group-hover:text-blue-900 dark:group-hover:text-amber-200 group-hover:drop-shadow-[0_0_8px_rgba(30,58,138,0.5)] dark:group-hover:drop-shadow-[0_0_8px_rgba(253,230,138,0.7)]">
+                          <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2.1c-3.2.7-3.9-1.5-3.9-1.5-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.6 1 1.6 1 .9 1.6 2.5 1.1 3.1.9.1-.7.3-1.1.6-1.4-2.6-.3-5.4-1.3-5.4-5.9 0-1.3.5-2.4 1.2-3.3-.1-.3-.5-1.6.1-3.2 0 0 1-.3 3.4 1.2a11.7 11.7 0 0 1 6.2 0c2.4-1.5 3.4-1.2 3.4-1.2.6 1.6.2 2.9.1 3.2.8.9 1.2 2 1.2 3.3 0 4.6-2.8 5.6-5.4 5.9.4.3.7.9.7 1.9v2.9c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.65 18.35.5 12 .5z" />
+                        </svg>
+                      </a>
+                    </li>
+                  </ul>
                 </div>
-              </div>
-              <div className="mt-4">
-                <h4 className="font-semibold text-sm">Courses &amp; Projects</h4>
-                <ul className="mt-2 list-disc pl-5 text-sm text-muted space-y-1">
-                  <li>Programming Principles — Built a 3D Maze & Third‑Person Shooter in Unity (C#) to learn core programming concepts.</li>
-                  <li>Data Structures — Learned and implemented core data structures in C++.</li>
-                  <li>Software Testing — Practiced Test‑Driven Development (TDD) using Java.</li>
-                  <li>Software Project Management — Built a software project management system in Java.</li>
-                  <li>
-                    Software Engineering Capstone — Text Marks the Spot: geolocation‑based messaging mobile app (iOS/Android), built with Flutter.
-                    <a
-                      href="https://github.com/austinhogan11/text_marks_the_spot_app"
-                      target="_blank"
-                      rel="noreferrer"
-                      aria-label="Text Marks the Spot GitHub repository"
-                      className="ml-2 inline-flex items-center align-middle text-muted transition-colors group hover:text-blue-900 dark:hover:text-amber-200 hover:drop-shadow-[0_0_8px_rgba(30,58,138,0.5)] dark:hover:drop-shadow-[0_0_8px_rgba(253,230,138,0.7)]"
-                      title="View repository on GitHub"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 transition-colors group-hover:text-blue-900 dark:group-hover:text-amber-200 group-hover:drop-shadow-[0_0_8px_rgba(30,58,138,0.5)] dark:group-hover:drop-shadow-[0_0_8px_rgba(253,230,138,0.7)]">
-                        <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2.1c-3.2.7-3.9-1.5-3.9-1.5-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.6 1 1.6 1 .9 1.6 2.5 1.1 3.1.9.1-.7.3-1.1.6-1.4-2.6-.3-5.4-1.3-5.4-5.9 0-1.3.5-2.4 1.2-3.3-.1-.3-.5-1.6.1-3.2 0 0 1-.3 3.4 1.2a11.7 11.7 0 0 1 6.2 0c2.4-1.5 3.4-1.2 3.4-1.2.6 1.6.2 2.9.1 3.2.8.9 1.2 2 1.2 3.3 0 4.6-2.8 5.6-5.4 5.9.4.3.7.9.7 1.9v2.9c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.65 18.35.5 12 .5z" />
-                      </svg>
-                    </a>
-                  </li>
-                </ul>
               </div>
             </div>
           </section>
           <hr className="border-t border-token/40 mx-auto max-w-[1100px]" />
 
           {/* Hobbies */}
-          <section id="hobbies" className="mx-auto max-w-6xl px-4 py-12 sm:py-16 scroll-mt-24">
-            <h2 className="text-2xl font-bold tracking-tight">Hobbies</h2>
-            <p className="mt-3 text-sm text-muted">
-              Running, strength training, cooking, reading — and building small tools that make life easier.
-            </p>
+          <section id="hobbies" className="relative mx-auto max-w-6xl px-4 py-12 sm:py-16 scroll-mt-24">
+            <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
+              <GlowAccents size={280} />
+            </div>
+            <div className="relative z-[1]">
+              <h2 className="text-2xl font-bold tracking-tight">Hobbies</h2>
+              <p className="mt-3 text-sm text-muted">
+                Running, strength training, cooking, reading — and building small tools that make life easier.
+              </p>
+            </div>
           </section>
           <hr className="border-t border-token/40 mx-auto max-w-[1100px]" />
 
           {/* Contact */}
-          <section id="contact" className="mx-auto max-w-6xl px-4 py-12 sm:py-16 scroll-mt-24">
-            <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-6">
-              {/* soft background glow accents */}
-              <div aria-hidden className="pointer-events-none absolute -top-10 -left-16 h-40 w-40 rounded-full bg-gradient-to-br from-sky-500/10 via-fuchsia-500/10 to-transparent blur-2xl" />
-              <div aria-hidden className="pointer-events-none absolute -bottom-12 -right-16 h-40 w-40 rounded-full bg-gradient-to-tr from-amber-200/10 via-sky-400/10 to-transparent blur-2xl" />
-              <h2 className="text-2xl font-bold tracking-tight">Let’s work together</h2>
-              <p className="mt-2 text-sm text-muted">
-                Email me or reach out on LinkedIn. I’m happy to chat about roles, projects, or collaboration.
-              </p>
-              <div className="mt-4 flex flex-wrap gap-3 text-sm">
-                <a
-                  href="mailto:austinhogan15@gmail.com"
-                  className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 font-medium text-white bg-[#38bdf8] hover:bg-[#0ea5e9] shadow-[inset_0_-2px_0_rgba(0,0,0,.15)] hover:shadow-[0_0_18px_rgba(56,189,248,.35)] transition-all focus:outline-none dark:outline dark:outline-1 dark:outline-sky-300/30"
-                >
-                  Email
-                </a>
-                <a
-                  href="https://www.linkedin.com/in/austin-hogan-663164151/"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 font-medium border border-token text-fg bg-transparent hover:border-[#1e3a8a] hover:text-[#1e3a8a] dark:hover:border-amber-200 dark:hover:text-amber-200 hover:shadow-[0_0_14px_rgba(30,58,138,.35)] dark:hover:shadow-[0_0_16px_rgba(253,230,138,.4)] transition-all focus:outline-none"
-                >
-                  LinkedIn
-                </a>
-                <a
-                  href="https://github.com/austinhogan11"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 font-medium border border-token text-fg bg-transparent hover:border-[#1e3a8a] hover:text-[#1e3a8a] dark:hover:border-amber-200 dark:hover:text-amber-200 hover:shadow-[0_0_14px_rgba(30,58,138,.35)] dark:hover:shadow-[0_0_16px_rgba(253,230,138,.4)] transition-all focus:outline-none"
-                >
-                  GitHub
-                </a>
+          <section id="contact" className="relative mx-auto max-w-6xl px-4 py-12 sm:py-16 scroll-mt-24">
+            <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
+              <GlowAccents size={320} />
+            </div>
+            <div className="relative z-[1]">
+              <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-6 transition-shadow transition-colors hover:border-sky-300 dark:hover:border-amber-200 hover:ring-1 hover:ring-sky-300/40 dark:hover:ring-amber-200/40 hover:shadow-[0_0_16px_rgba(125,211,252,.35)] dark:hover:shadow-[0_0_18px_rgba(253,230,138,.45)]">
+                <h2 className="text-2xl font-bold tracking-tight">Let’s work together</h2>
+                <p className="mt-2 text-sm text-muted">
+                  Email me or reach out on LinkedIn. I’m happy to chat about roles, projects, or collaboration.
+                </p>
+                <div className="mt-4 flex flex-wrap gap-3 text-sm">
+                  <a
+                    href="mailto:austinhogan15@gmail.com"
+                    className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 font-medium text-white bg-[#38bdf8] hover:bg-[#0ea5e9] shadow-[inset_0_-2px_0_rgba(0,0,0,.15)] hover:shadow-[0_0_18px_rgba(56,189,248,.35)] transition-all focus:outline-none dark:outline dark:outline-1 dark:outline-sky-300/30"
+                  >
+                    Email
+                  </a>
+                  <a
+                    href="https://www.linkedin.com/in/austin-hogan-663164151/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 font-medium border border-token text-fg bg-transparent hover:border-[#1e3a8a] hover:text-[#1e3a8a] dark:hover:border-amber-200 dark:hover:text-amber-200 hover:shadow-[0_0_14px_rgba(30,58,138,.35)] dark:hover:shadow-[0_0_16px_rgba(253,230,138,.4)] transition-all focus:outline-none"
+                  >
+                    LinkedIn
+                  </a>
+                  <a
+                    href="https://github.com/austinhogan11"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 font-medium border border-token text-fg bg-transparent hover:border-[#1e3a8a] hover:text-[#1e3a8a] dark:hover:border-amber-200 dark:hover:text-amber-200 hover:shadow-[0_0_14px_rgba(30,58,138,.35)] dark:hover:shadow-[0_0_16px_rgba(253,230,138,.4)] transition-all focus:outline-none"
+                  >
+                    GitHub
+                  </a>
+                </div>
               </div>
             </div>
           </section>
