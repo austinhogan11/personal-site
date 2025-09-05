@@ -501,7 +501,7 @@ export default function App() {
                     </a>
                   </div>
                   <p className="mt-2 text-sm text-muted">
-                    Vite + React site styled with Tailwind CSS. Deployed via static hosting or container — easy to extend with blog, notes, and project write-ups.
+                    Personal portfolio &amp; resume site that showcases my Cloud DevOps work and projects. Built with React (Vite) and Tailwind, with small design tokens and a clean dark theme.
                   </p>
                   <div className="mt-3 flex flex-wrap gap-2 text-xs text-muted">
                     <span className="rounded bg-card border border-token px-2 py-0.5">React</span>
