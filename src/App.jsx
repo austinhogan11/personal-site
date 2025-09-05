@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useRef } from "react";
+import { useEffect, useState, useMemo } from "react";
 function GlowAccents({ size = 160 }) {
   // Predefined gradient combos (kept static so Tailwind includes them)
   const topCombos = [
@@ -47,67 +47,6 @@ function GlowAccents({ size = 160 }) {
     </>
   );
 }
-// Personal site scaffold using TailwindCSS
-// Light/Dark theming via CSS variables defined in index.css
-
-function ThemeToggle() {
-  const [theme, setTheme] = useState(() => {
-    if (typeof window === "undefined") return "light";
-    const stored = localStorage.getItem("theme");
-    if (stored) return stored;
-    return window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
-  });
-
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", theme === "dark");
-    localStorage.setItem("theme", theme);
-    document.dispatchEvent(new Event('themechange'));
-  }, [theme]);
-
-  return (
-    <button
-      aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-      aria-pressed={theme === "dark"}
-      onClick={(e) => { setTheme(theme === "dark" ? "light" : "dark"); e.currentTarget.blur(); }}
-      className="theme-toggle group text-muted hover:bg-card/60 border border-zinc-400 dark:border-zinc-500 hover:text-blue-900 dark:hover:text-amber-200 hover:border-blue-900 dark:hover:border-amber-200 active:border-blue-900 dark:active:border-amber-200 focus:outline-none focus:ring-0 focus:shadow-none transition-shadow hover:shadow-[0_0_10px_rgba(30,58,138,0.6)] dark:hover:shadow-[0_0_12px_rgba(253,230,138,0.6)]"
-    >
-      <span className="sr-only">Toggle theme</span>
-      {theme === "dark" ? (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="w-5 h-5 transition-colors group-hover:text-blue-900 dark:group-hover:text-amber-200 group-hover:drop-shadow-[0_0_8px_rgba(30,58,138,0.5)] dark:group-hover:drop-shadow-[0_0_8px_rgba(253,230,138,0.7)]"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"
-          />
-        </svg>
-      ) : (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="w-5 h-5 transition-colors group-hover:text-blue-900 dark:group-hover:text-amber-200 group-hover:drop-shadow-[0_0_8px_rgba(30,58,138,0.5)] dark:group-hover:drop-shadow-[0_0_8px_rgba(253,230,138,0.7)]"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M12 3v1m0 16v1m8.66-11.66l-.7.7M4.34 17.66l-.7.7M21 12h-1M4 12H3m15.66 5.66l-.7-.7M6.34 6.34l-.7-.7M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-          />
-        </svg>
-      )}
-    </button>
-  );
-}
 
 function ScrollSpyNav() {
   const sections = [
@@ -129,8 +68,7 @@ function ScrollSpyNav() {
     // Observe class changes on <html>
     const mo = new MutationObserver(update);
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-    document.addEventListener('themechange', update);
-    return () => { mo.disconnect(); document.removeEventListener('themechange', update); };
+    return () => { mo.disconnect(); };
   }, []);
 
   useEffect(() => {
@@ -242,8 +180,9 @@ function ScrollSpyTopNav() {
 export default function App() {
   useEffect(() => {
     const style = document.createElement('style');
-    style.textContent = `html{scroll-behavior:smooth}`;
+    style.textContent = `html{scroll-behavior:smooth;font-size:90%}`;
     document.head.appendChild(style);
+    document.documentElement.classList.add('dark');
     return () => document.head.removeChild(style);
   }, []);
 
@@ -268,7 +207,6 @@ export default function App() {
   return (
     <div className="min-h-screen bg-bg text-fg">
       <div className="fixed top-3 right-3 z-20 flex flex-col items-end gap-2">
-        <ThemeToggle />
         <a
           href="https://github.com/austinhogan11"
           target="_blank"
@@ -427,7 +365,7 @@ export default function App() {
           <hr className="border-t border-token/40 mx-auto max-w-[1100px]" />
 
           {/* Experience */}
-          <section id="experience" className="relative mx-auto max-w-6xl px-4 py-12 sm:py-16 scroll-mt-24">
+          <section id="experience" className="relative mx-auto max-w-6xl px-4 pt-8 sm:pt-10 pb-12 sm:pb-16 scroll-mt-24">
             <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
               <GlowAccents size={320} />
             </div>
@@ -475,7 +413,7 @@ export default function App() {
           <hr className="border-t border-token/40 mx-auto max-w-[1100px]" />
 
           {/* Projects */}
-          <section id="projects" className="relative mx-auto max-w-6xl px-4 py-12 sm:py-16 scroll-mt-24">
+          <section id="projects" className="relative mx-auto max-w-6xl px-4 pt-8 sm:pt-10 pb-12 sm:pb-16 scroll-mt-24">
             <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
               <GlowAccents size={340} />
             </div>
@@ -577,7 +515,7 @@ export default function App() {
           <hr className="border-t border-token/40 mx-auto max-w-[1100px]" />
 
           {/* Education */}
-          <section id="education" className="relative mx-auto max-w-6xl px-4 py-12 sm:py-16 scroll-mt-24">
+          <section id="education" className="relative mx-auto max-w-6xl px-4 pt-8 sm:pt-10 pb-12 sm:pb-16 scroll-mt-24">
             <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
               <GlowAccents size={320} />
             </div>
@@ -625,7 +563,7 @@ export default function App() {
           <hr className="border-t border-token/40 mx-auto max-w-[1100px]" />
 
           {/* Hobbies */}
-          <section id="hobbies" className="relative mx-auto max-w-6xl px-4 py-12 sm:py-16 scroll-mt-24">
+          <section id="hobbies" className="relative mx-auto max-w-6xl px-4 pt-8 sm:pt-10 pb-12 sm:pb-16 scroll-mt-24">
             <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
               <GlowAccents size={280} />
             </div>
@@ -636,8 +574,22 @@ export default function App() {
                 <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-sky-300 dark:hover:border-amber-200 hover:ring-1 hover:ring-sky-300/40 dark:hover:ring-amber-200/40 hover:shadow-[0_0_16px_rgba(125,211,252,.35)] dark:hover:shadow-[0_0_18px_rgba(253,230,138,.45)]">
                   <h3 className="font-semibold">Running &amp; Coaching</h3>
                   <p className="mt-2 text-sm text-muted">
-                    Started running track in high school and now I run road races. I also coach one athlete for my running team, CHSN Running, and plan to grow the team to help aspiring runners hit their fastest times.
+                    I began my running career joining the track team in high school as a hurdler, now I run road races from 1 mile to marathons.
                   </p>
+                  <p className="mt-2 text-sm text-muted">
+                    I am currently coaching one athlete for his first marathon on my running team, CHSN Running.
+                  </p>
+                                    <p className="mt-3 text-sm">
+                    Follow my page on{" "}
+                    <a
+                      href="https://www.instagram.com/chsnrunning/"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="underline decoration-transparent hover:decoration-current text-fg"
+                    >
+                      Instagram @chsnrunning
+                    </a>.
+                  </p>                  
                   <div className="mt-4">
                     <p className="text-sm font-medium text-fg">Goals</p>
                     <ul className="mt-1 list-disc pl-5 text-sm text-muted space-y-1">
@@ -653,17 +605,6 @@ export default function App() {
                       <li>Marathon: 3:13</li>
                     </ul>
                   </div>
-                  <p className="mt-3 text-sm">
-                    Follow my page on{" "}
-                    <a
-                      href="https://www.instagram.com/chsnrunning/"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="underline decoration-transparent hover:decoration-current text-fg"
-                    >
-                      Instagram @chsnrunning
-                    </a>.
-                  </p>
                 </div>
 
                 {/* Reading */}
@@ -693,7 +634,7 @@ export default function App() {
           <hr className="border-t border-token/40 mx-auto max-w-[1100px]" />
 
           {/* Contact */}
-          <section id="contact" className="relative mx-auto max-w-6xl px-4 py-12 sm:py-16 scroll-mt-24">
+          <section id="contact" className="relative mx-auto max-w-6xl px-4 pt-8 sm:pt-10 pb-12 sm:pb-16 scroll-mt-24">
             <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
               <GlowAccents size={320} />
             </div>
