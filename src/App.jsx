@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 function GlowAccents({ size = 160 }) {
   // Predefined gradient combos (kept static so Tailwind includes them)
   const topCombos = [
@@ -317,7 +317,7 @@ export default function App() {
             <div aria-hidden className="pointer-events-none absolute -bottom-12 -right-16 h-72 w-72 rounded-full bg-gradient-to-tr from-amber-200/10 via-sky-400/10 to-transparent blur-2xl" />
             <div className="grid gap-10 md:grid-cols-[1.65fr_1.1fr] md:gap-12 items-start">
               <div className="relative z-[1]">
-                <h1 className="text-[40px] sm:text-5xl md:text-6xl font-extrabold tracking-tight">
+                <h1 className="text-[36px] sm:text-4xl md:text-5xl font-extrabold tracking-tight">
                   <span className="block text-fg">Austin Hogan</span>
                   <span className="relative inline-block">
                   <span className="relative z-10 block bg-clip-text text-transparent
@@ -334,9 +334,9 @@ export default function App() {
                   </span>
                 </h1>
               <div className="mt-5 max-w-3xl space-y-2 pl-4 border-l border-blue-900/20 dark:border-amber-200/25">
-                <p className="text-[18px] md:text-[19px] leading-[1.55] font-medium text-white">Cloud DevOps Engineer for Macy’s.</p>
-                <p className="text-[18px] md:text-[19px] leading-[1.55] font-medium text-white">Building CHSN Running Platform.</p>
-                <p className="text-[18px] md:text-[19px] leading-[1.55] font-medium text-white">
+                <p className="text-[16px] md:text-[17px] leading-[1.5] font-medium text-white">Cloud DevOps Engineer for Macy’s.</p>
+                <p className="text-[16px] md:text-[17px] leading-[1.5] font-medium text-white">Building CHSN Running Platform.</p>
+                <p className="text-[16px] md:text-[17px] leading-[1.5] font-medium text-white">
                   Runner &amp; Coach at{' '}
                   <a
                     href="https://www.instagram.com/chsnrunning/"
@@ -354,13 +354,13 @@ export default function App() {
                 <div className="mt-8 flex gap-3">
                   <a
                     href="#projects"
-                    className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 font-medium text-white bg-[#38bdf8] hover:bg-[#0ea5e9] shadow-[inset_0_-2px_0_rgba(0,0,0,.15)] hover:shadow-[0_0_18px_rgba(56,189,248,.35)] transition-all focus:outline-none dark:outline dark:outline-1 dark:outline-sky-300/30"
+                    className="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white bg-[#38bdf8] hover:bg-[#0ea5e9] shadow-[inset_0_-2px_0_rgba(0,0,0,.15)] hover:shadow-[0_0_18px_rgba(56,189,248,.35)] transition-all focus:outline-none dark:outline dark:outline-1 dark:outline-sky-300/30"
                   >
                     View Projects
                   </a>
                   <a
                     href="#contact"
-                    className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 font-medium border border-token text-white bg-transparent hover:border-[#1e3a8a] hover:text-white dark:hover:border-amber-200 dark:hover:text-white hover:shadow-[0_0_14px_rgba(30,58,138,.35)] dark:hover:shadow-[0_0_16px_rgba(253,230,138,.4)] transition-all focus:outline-none"
+                    className="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium border border-token text-white bg-transparent hover:border-[#1e3a8a] hover:text-white dark:hover:border-amber-200 dark:hover:text-white hover:shadow-[0_0_14px_rgba(30,58,138,.35)] dark:hover:shadow-[0_0_16px_rgba(253,230,138,.4)] transition-all focus:outline-none"
                   >
                     Get in touch
                   </a>
@@ -368,7 +368,7 @@ export default function App() {
               </div>
 
               {/* Quick details card */}
-              <aside className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 md:p-6 transition-shadow transition-colors hover:border-sky-300 dark:hover:border-amber-200 hover:ring-1 hover:ring-sky-300/40 dark:hover:ring-amber-200/40 hover:shadow-[0_0_16px_rgba(125,211,252,.35)] dark:hover:shadow-[0_0_18px_rgba(253,230,138,.45)]">
+              <aside className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 md:p-6 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-sky-300 dark:hover:border-amber-200 hover:ring-1 hover:ring-sky-300/40 dark:hover:ring-amber-200/40 hover:shadow-[0_0_16px_rgba(125,211,252,.35)] dark:hover:shadow-[0_0_18px_rgba(253,230,138,.45)]">
                 {/* gentle radial behind the title */}
                 <div aria-hidden className="pointer-events-none absolute -top-24 -right-24 h-64 w-64 rounded-full bg-gradient-to-tr from-sky-400/10 via-fuchsia-400/10 to-transparent blur-3xl" />
 
@@ -385,7 +385,7 @@ export default function App() {
                     <dd>
                       <a
                         href="mailto:austinhogan15@gmail.com"
-                        className="text-fg underline underline-offset-2 decoration-transparent hover:decoration-current whitespace-nowrap"
+                        className="text-fg underline underline-offset-2 decoration-transparent hover:decoration-current break-all xl:break-normal xl:whitespace-nowrap"
                       >
                         austinhogan15@gmail.com
                       </a>
@@ -434,7 +434,7 @@ export default function App() {
             <div className="relative z-[1]">
               <h2 className="text-2xl font-bold tracking-tight">Experience</h2>
               <div className="mt-6 space-y-4">
-                <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-shadow transition-colors hover:border-sky-300 dark:hover:border-amber-200 hover:ring-1 hover:ring-sky-300/40 dark:hover:ring-amber-200/40 hover:shadow-[0_0_16px_rgba(125,211,252,.35)] dark:hover:shadow-[0_0_18px_rgba(253,230,138,.45)]">
+                <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-sky-300 dark:hover:border-amber-200 hover:ring-1 hover:ring-sky-300/40 dark:hover:ring-amber-200/40 hover:shadow-[0_0_16px_rgba(125,211,252,.35)] dark:hover:shadow-[0_0_18px_rgba(253,230,138,.45)]">
                   <div className="flex items-center justify-between">
                     <div>
                       <h3 className="font-semibold">Software Engineer (Cloud DevOps / Platform)</h3>
@@ -482,7 +482,7 @@ export default function App() {
             <div className="relative z-[1]">
               <h2 className="text-2xl font-bold tracking-tight">Projects</h2>
               <div className="mt-6 grid gap-6 sm:grid-cols-2">
-                <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-shadow transition-colors hover:border-sky-300 dark:hover:border-amber-200 hover:ring-1 hover:ring-sky-300/40 dark:hover:ring-amber-200/40 hover:shadow-[0_0_16px_rgba(125,211,252,.35)] dark:hover:shadow-[0_0_18px_rgba(253,230,138,.45)]">
+                <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-sky-300 dark:hover:border-amber-200 hover:ring-1 hover:ring-sky-300/40 dark:hover:ring-amber-200/40 hover:shadow-[0_0_16px_rgba(125,211,252,.35)] dark:hover:shadow-[0_0_18px_rgba(253,230,138,.45)]">
                   <div className="flex items-center justify-between">
                     <h3 className="font-semibold">CHSN Running Platform</h3>
                     <a
@@ -546,7 +546,7 @@ export default function App() {
                   </details>
                 </div>
 
-                <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-shadow transition-colors hover:border-sky-300 dark:hover:border-amber-200 hover:ring-1 hover:ring-sky-300/40 dark:hover:ring-amber-200/40 hover:shadow-[0_0_16px_rgba(125,211,252,.35)] dark:hover:shadow-[0_0_18px_rgba(253,230,138,.45)]">
+                <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-sky-300 dark:hover:border-amber-200 hover:ring-1 hover:ring-sky-300/40 dark:hover:ring-amber-200/40 hover:shadow-[0_0_16px_rgba(125,211,252,.35)] dark:hover:shadow-[0_0_18px_rgba(253,230,138,.45)]">
                   <div className="flex items-center justify-between">
                     <h3 className="font-semibold">Personal Site</h3>
                     <a
@@ -583,7 +583,7 @@ export default function App() {
             </div>
             <div className="relative z-[1]">
               <h2 className="text-2xl font-bold tracking-tight">Education</h2>
-              <div className="mt-6 relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-shadow transition-colors hover:border-sky-300 dark:hover:border-amber-200 hover:ring-1 hover:ring-sky-300/40 dark:hover:ring-amber-200/40 hover:shadow-[0_0_16px_rgba(125,211,252,.35)] dark:hover:shadow-[0_0_18px_rgba(253,230,138,.45)]">
+              <div className="mt-6 relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-sky-300 dark:hover:border-amber-200 hover:ring-1 hover:ring-sky-300/40 dark:hover:ring-amber-200/40 hover:shadow-[0_0_16px_rgba(125,211,252,.35)] dark:hover:shadow-[0_0_18px_rgba(253,230,138,.45)]">
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-xl font-semibold">Kennesaw State University</h3>
@@ -630,10 +630,64 @@ export default function App() {
               <GlowAccents size={280} />
             </div>
             <div className="relative z-[1]">
-              <h2 className="text-2xl font-bold tracking-tight">Hobbies</h2>
-              <p className="mt-3 text-sm text-muted">
-                Running, strength training, cooking, reading — and building small tools that make life easier.
-              </p>
+              <h2 className="text-2xl font-bold tracking-tight mt-4 mb-4">Hobbies</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {/* Running & Coaching */}
+                <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-sky-300 dark:hover:border-amber-200 hover:ring-1 hover:ring-sky-300/40 dark:hover:ring-amber-200/40 hover:shadow-[0_0_16px_rgba(125,211,252,.35)] dark:hover:shadow-[0_0_18px_rgba(253,230,138,.45)]">
+                  <h3 className="font-semibold">Running &amp; Coaching</h3>
+                  <p className="mt-2 text-sm text-muted">
+                    Started running track in high school and now I run road races. I also coach one athlete for my running team, CHSN Running, and plan to grow the team to help aspiring runners hit their fastest times.
+                  </p>
+                  <div className="mt-4">
+                    <p className="text-sm font-medium text-fg">Goals</p>
+                    <ul className="mt-1 list-disc pl-5 text-sm text-muted space-y-1">
+                      <li>Sub‑5 min Mile</li>
+                      <li>Sub‑3 hr Marathon</li>
+                    </ul>
+                  </div>
+                  <div className="mt-4">
+                    <p className="text-sm font-medium text-fg">Personal Bests</p>
+                    <ul className="mt-1 list-disc pl-5 text-sm text-muted space-y-1">
+                      <li>5K: 18:35</li>
+                      <li>Half‑Marathon: 1:28</li>
+                      <li>Marathon: 3:13</li>
+                    </ul>
+                  </div>
+                  <p className="mt-3 text-sm">
+                    Follow my page on{" "}
+                    <a
+                      href="https://www.instagram.com/chsnrunning/"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="underline decoration-transparent hover:decoration-current text-fg"
+                    >
+                      Instagram @chsnrunning
+                    </a>.
+                  </p>
+                </div>
+
+                {/* Reading */}
+                <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-sky-300 dark:hover:border-amber-200 hover:ring-1 hover:ring-sky-300/40 dark:hover:ring-amber-200/40 hover:shadow-[0_0_16px_rgba(125,211,252,.35)] dark:hover:shadow-[0_0_18px_rgba(253,230,138,.45)]">
+                  <h3 className="font-semibold">Reading</h3>
+                  <p className="mt-2 text-sm text-muted">
+                    I love to read — my favorite genres are self‑improvement, science, and sci‑fi/fantasy.
+                  </p>
+                  <p className="mt-3 text-sm text-muted">
+                    I am currently reading <span className="italic">Go One More</span> by Nick Bare. He is the CEO of Bare Performance Nutrition and a hybrid‑athlete.
+                  </p>
+                  <p className="mt-3 text-sm text-muted">
+                    I am also reading my way through the canon Star Wars novels (there are a lot!).
+                  </p>
+                </div>
+
+                {/* Learning Spanish */}
+                <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-sky-300 dark:hover:border-amber-200 hover:ring-1 hover:ring-sky-300/40 dark:hover:ring-amber-200/40 hover:shadow-[0_0_16px_rgba(125,211,252,.35)] dark:hover:shadow-[0_0_18px_rgba(253,230,138,.45)]">
+                  <h3 className="font-semibold">Learning Spanish</h3>
+                  <p className="mt-2 text-sm text-muted">
+                    I recently surpassed the 1000‑day streak on Duolingo — which I’m proud of. I also learn Spanish from my wife, who is Puerto Rican.
+                  </p>
+                </div>
+              </div>
             </div>
           </section>
           <hr className="border-t border-token/40 mx-auto max-w-[1100px]" />
@@ -644,7 +698,7 @@ export default function App() {
               <GlowAccents size={320} />
             </div>
             <div className="relative z-[1]">
-              <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-6 transition-shadow transition-colors hover:border-sky-300 dark:hover:border-amber-200 hover:ring-1 hover:ring-sky-300/40 dark:hover:ring-amber-200/40 hover:shadow-[0_0_16px_rgba(125,211,252,.35)] dark:hover:shadow-[0_0_18px_rgba(253,230,138,.45)]">
+              <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-6 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-sky-300 dark:hover:border-amber-200 hover:ring-1 hover:ring-sky-300/40 dark:hover:ring-amber-200/40 hover:shadow-[0_0_16px_rgba(125,211,252,.35)] dark:hover:shadow-[0_0_18px_rgba(253,230,138,.45)]">
                 <h2 className="text-2xl font-bold tracking-tight">Let’s work together</h2>
                 <p className="mt-2 text-sm text-muted">
                   Email me or reach out on LinkedIn. I’m happy to chat about roles, projects, or collaboration.
