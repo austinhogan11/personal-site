@@ -63,6 +63,15 @@ function IconMail({ className = "", ...props }) {
   );
 }
 // -------------------------------------------------------------------------------
+// --- Analytics helper (no-op if Plausible isn't loaded) -------------------------
+function track(eventName, props = undefined) {
+  try {
+    if (typeof window !== 'undefined' && window.plausible) {
+      window.plausible(eventName, props ? { props } : undefined);
+    }
+  } catch (_) {}
+}
+// -------------------------------------------------------------------------------
 /*
   Personal site App.jsx
   ---------------------
@@ -350,7 +359,7 @@ export default function App() {
           target="_blank"
           rel="noreferrer"
           aria-label="GitHub Profile"
-          onClick={(e) => e.currentTarget.blur()}
+          onClick={(e) => { e.currentTarget.blur(); track('Click: Header GitHub'); }}
           className="theme-toggle group inline-grid place-items-center w-9 h-9 text-muted transition-shadow transition-colors border border-zinc-400 dark:border-zinc-500 hover-accent focus-accent"
         >
           <IconGitHub className="w-5 h-5 transition-colors" />
@@ -360,7 +369,7 @@ export default function App() {
           target="_blank"
           rel="noreferrer"
           aria-label="LinkedIn Profile"
-          onClick={(e) => e.currentTarget.blur()}
+          onClick={(e) => { e.currentTarget.blur(); track('Click: Header LinkedIn'); }}
           className="theme-toggle group inline-grid place-items-center w-9 h-9 text-muted transition-shadow transition-colors border border-zinc-400 dark:border-zinc-500 hover-accent focus-accent"
         >
           <IconLinkedIn className="w-5 h-5 transition-colors" />
@@ -368,7 +377,7 @@ export default function App() {
         <a
           href="mailto:austinhogan15@gmail.com"
           aria-label="Email Austin Hogan"
-          onClick={(e) => e.currentTarget.blur()}
+          onClick={(e) => { e.currentTarget.blur(); track('Click: Header Email'); }}
           className="theme-toggle group inline-grid place-items-center w-9 h-9 text-muted transition-shadow transition-colors border border-zinc-400 dark:border-zinc-500 hover-accent focus-accent"
         >
           <IconMail className="w-5 h-5 transition-colors" />
@@ -562,6 +571,7 @@ export default function App() {
                       aria-label="CHSN Running Platform repository"
                       title="View repository on GitHub"
                       className="group inline-grid place-items-center w-9 h-9 rounded-md text-muted transition-shadow transition-colors border border-zinc-400 dark:border-zinc-500 hover-accent focus-accent"
+                      onClick={(e) => { e.currentTarget.blur(); track('Click: Project Repo', { project: 'CHSN Running' }); }}
                     >
                       <IconGitHub className="w-5 h-5 transition-colors" />
                     </a>
@@ -619,6 +629,7 @@ export default function App() {
                       aria-label="Personal Site repository"
                       title="View repository on GitHub"
                       className="group inline-grid place-items-center w-9 h-9 rounded-md text-muted transition-shadow transition-colors border border-zinc-400 dark:border-zinc-500 hover-accent focus-accent"
+                      onClick={(e) => { e.currentTarget.blur(); track('Click: Project Repo', { project: 'Personal Site' }); }}
                     >
                       <IconGitHub className="w-5 h-5 transition-colors" />
                     </a>
@@ -674,6 +685,7 @@ export default function App() {
                         aria-label="Text Marks the Spot GitHub repository"
                         className="ml-2 inline-flex items-center align-middle text-muted transition-colors group hover-accent"
                         title="View repository on GitHub"
+                        onClick={(e) => { e.currentTarget.blur(); track('Click: Education Repo', { project: 'Text Marks the Spot' }); }}
                       >
                         <IconGitHub className="w-4 h-4 transition-colors" />
                       </a>
@@ -775,6 +787,7 @@ export default function App() {
                   <a
                     href="mailto:austinhogan15@gmail.com"
                     className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 font-medium border border-amber-300/30 dark:border-amber-200/30 text-blue-950 dark:text-blue-900 bg-amber-300 dark:bg-amber-200 hover:bg-amber-200 dark:hover:bg-amber-100 shadow-[0_0_18px_rgba(253,230,138,.35)] hover:shadow-[0_0_24px_rgba(253,230,138,.5)] transition-all focus:outline-none focus:ring-2 focus:ring-amber-300/60 dark:focus:ring-amber-200/60"
+                    onClick={(e) => { e.currentTarget.blur(); track('Click: Contact Email'); }}
                   >
                     Email
                   </a>
@@ -783,6 +796,7 @@ export default function App() {
                     target="_blank"
                     rel="noreferrer"
                     className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 font-medium border border-token text-fg bg-transparent hover-accent focus-accent"
+                    onClick={(e) => { e.currentTarget.blur(); track('Click: Contact LinkedIn'); }}
                   >
                     LinkedIn
                   </a>
@@ -791,6 +805,7 @@ export default function App() {
                     target="_blank"
                     rel="noreferrer"
                     className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 font-medium border border-token text-fg bg-transparent hover-accent focus-accent"
+                    onClick={(e) => { e.currentTarget.blur(); track('Click: Contact GitHub'); }}
                   >
                     GitHub
                   </a>
