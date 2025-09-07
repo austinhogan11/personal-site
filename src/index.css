@@ -30,6 +30,20 @@
   --ring: #ffe3bb33;
 }
 
+/* Baseline to avoid CLS + smooth scroll */
+html {
+  font-size: 90%;
+  scroll-behavior: smooth;
+}
+
+/* Token-derived accent helpers */
+:root {
+  --accent-ring: color-mix(in oklab, var(--primary) 35%, transparent);
+  --accent-shadow-outer: 0 0 0 1px var(--primary),
+                         0 0 22px 2px color-mix(in oklab, var(--primary) 26%, transparent);
+  --accent-shadow-soft: 0 10px 30px -10px color-mix(in oklab, var(--primary) 22%, transparent);
+}
+
 html { color-scheme: light dark; }
 body {
   background: var(--bg);
@@ -39,7 +53,10 @@ body {
 
 /* Smooth theme transition */
 * {
-  transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+  transition: background-color 220ms ease, color 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
 }
 
 /* Selection + scrollbar polish */
@@ -62,7 +79,8 @@ body {
   background-color: var(--primary);
   color: white;
 }
-.btn-primary:hover { filter: brightness(0.95); }
+.btn-primary:hover { background-color: color-mix(in oklab, var(--primary) 88%, black); }
+.btn-primary:active { background-color: color-mix(in oklab, var(--primary) 78%, black); }
 
 .btn-ghost {
   @apply inline-flex items-center rounded-md border px-4 py-2 text-sm font-medium focus:outline-none focus:ring-2;
@@ -71,6 +89,7 @@ body {
   color: var(--fg);
 }
 .btn-ghost:hover { background-color: color-mix(in oklab, var(--border) 60%, transparent); }
+.btn-ghost:active { background-color: color-mix(in oklab, var(--border) 85%, transparent); }
 
 /* New theme toggle button */
 .theme-toggle {
@@ -78,6 +97,11 @@ body {
   width: 40px;
   height: 40px;
 }
+
+/* Accent glow utilities (token-based, light/dark consistent) */
+.hover-accent:hover { border-color: var(--primary) !important; box-shadow: var(--accent-shadow-outer); }
+.focus-accent:focus-visible { outline: 0; box-shadow: 0 0 0 2px var(--primary), 0 0 0 6px var(--accent-ring); }
+.glow-accent { box-shadow: var(--accent-shadow-soft); }
 
 /* Badges with palette */
 .badge-primary {
@@ -95,8 +119,18 @@ body {
   background-color: var(--card);
   border-color: var(--border);
 }
+.card:hover {
+  border-color: color-mix(in oklab, var(--primary) 45%, var(--border));
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary) 65%, transparent), var(--accent-shadow-soft);
+}
 .link {
   color: var(--primary);
 }
 .link:hover { text-decoration: underline; }
+
+
+/* Nav item dot helpers (use tokens, not hard-coded colors) */
+.nav-dot { transition: box-shadow .28s ease, background-color .28s ease; }
+.nav-dot-active { background-color: var(--fg); box-shadow: 0 0 0 6px var(--accent-ring); }
+.nav-dot-hover:hover { box-shadow: 0 0 0 6px var(--accent-ring); }
 
