@@ -234,8 +234,26 @@ export default function App() {
     setDuoStreak(baseCount + Math.max(0, days));
   }, []);
 
+  // Scroll progress state and effect
+  const [scrollProgress, setScrollProgress] = useState(0);
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = (scrollTop / docHeight) * 100;
+      setScrollProgress(progress);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <div className="min-h-screen bg-bg text-fg">
+      {/* Progress bar */}
+      <div
+        className="fixed top-0 left-0 h-1 bg-amber-300 dark:bg-amber-200 z-50 transition-all duration-150 shadow-[0_0_8px_rgba(253,230,138,.5)]"
+        style={{ width: `${scrollProgress}%` }}
+      />
       <div className="fixed top-3 right-3 z-20 flex flex-col items-end gap-2">
         <a
           href="https://github.com/austinhogan11"
