@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-function GlowAccents({ size = 160 }) {
+function GlowAccents({ size = 160, parallax = false, maxShift = 1.6 }) {
   // Predefined gradient combos (kept static so Tailwind includes them)
   const topCombos = [
     "bg-gradient-to-br from-sky-500/10 via-fuchsia-500/10 to-transparent",
@@ -30,19 +30,51 @@ function GlowAccents({ size = 160 }) {
     scale: 1 + Math.random() * 0.25, // 1.0 - 1.25
   }), []);
 
+  // Parallax effect (tiny, motion-safe)
+  const [shift, setShift] = useState({ x: 0, y: 0 });
+  useEffect(() => {
+    if (!parallax || typeof window === 'undefined') return;
+    const prefersReduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduce) return;
+    let raf = 0;
+    const onMove = (e) => {
+      const nx = (e.clientX / window.innerWidth - 0.5) * (maxShift * 2);
+      const ny = (e.clientY / window.innerHeight - 0.5) * (maxShift * 2);
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => setShift({ x: nx, y: ny }));
+    };
+    window.addEventListener('pointermove', onMove, { passive: true });
+    return () => {
+      window.removeEventListener('pointermove', onMove);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [parallax, maxShift]);
+
   const dim = size * pick.scale;
 
   return (
     <>
       <div
         aria-hidden
-        className={`pointer-events-none absolute rounded-full blur-2xl ${topCombos[pick.topIdx]}`}
-        style={{ top: `${pick.topOffset.top}px`, left: `${pick.topOffset.left}px`, width: `${dim}px`, height: `${dim}px` }}
+        className={`pointer-events-none absolute rounded-full blur-2xl will-change-transform ${topCombos[pick.topIdx]}`}
+        style={{
+          top: `${pick.topOffset.top}px`,
+          left: `${pick.topOffset.left}px`,
+          width: `${dim}px`,
+          height: `${dim}px`,
+          transform: `translate3d(${shift.x}px, ${shift.y}px, 0)`,
+        }}
       />
       <div
         aria-hidden
-        className={`pointer-events-none absolute rounded-full blur-2xl ${bottomCombos[pick.botIdx]}`}
-        style={{ bottom: `${pick.botOffset.bottom}px`, right: `${pick.botOffset.right}px`, width: `${dim}px`, height: `${dim}px` }}
+        className={`pointer-events-none absolute rounded-full blur-2xl will-change-transform ${bottomCombos[pick.botIdx]}`}
+        style={{
+          bottom: `${pick.botOffset.bottom}px`,
+          right: `${pick.botOffset.right}px`,
+          width: `${dim}px`,
+          height: `${dim}px`,
+          transform: `translate3d(${shift.x}px, ${shift.y}px, 0)`,
+        }}
       />
     </>
   );
@@ -304,7 +336,7 @@ export default function App() {
               </div>
 
               {/* Quick details card */}
-              <aside className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 md:p-6 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover-accent focus-accent">
+              <aside className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 md:p-6 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover-accent focus-accent hover:-translate-y-1 hover:shadow-lg">
                 {/* gentle radial behind the title */}
                 <div aria-hidden className="pointer-events-none absolute -top-24 -right-24 h-64 w-64 rounded-full bg-gradient-to-tr from-sky-400/10 via-fuchsia-400/10 to-transparent blur-3xl" />
 
@@ -356,7 +388,7 @@ export default function App() {
                     </div>
                   </div>
                 </dl>
-                <GlowAccents size={180} />
+                <GlowAccents size={180} parallax maxShift={1.2} />
               </aside>
             </div>
           </section>
@@ -365,12 +397,12 @@ export default function App() {
           {/* Experience */}
           <section id="experience" className="relative mx-auto max-w-6xl px-4 pt-8 sm:pt-10 pb-12 sm:pb-16 scroll-mt-24">
             <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
-              <GlowAccents size={320} />
+              <GlowAccents size={320} parallax maxShift={1.6} />
             </div>
             <div className="relative z-[1]">
               <h2 className="text-2xl font-bold tracking-tight text-blue-900 drop-shadow-[0_0_6px_rgba(30,58,138,0.25)] dark:text-amber-200 dark:drop-shadow-[0_0_16px_rgba(253,230,138,0.55)]">Experience</h2>
               <div className="mt-6 space-y-4">
-                <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover-accent focus-accent">
+                <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover-accent focus-accent hover:-translate-y-1 hover:shadow-lg">
                   <div className="flex items-center justify-between">
                     <div>
                       <h3 className="font-semibold text-blue-900 drop-shadow-[0_0_6px_rgba(30,58,138,0.25)] dark:text-amber-200 dark:drop-shadow-[0_0_14px_rgba(253,230,138,0.5)]">Software Engineer (Cloud DevOps / Platform)</h3>
@@ -413,12 +445,12 @@ export default function App() {
           {/* Projects */}
           <section id="projects" className="relative mx-auto max-w-6xl px-4 pt-8 sm:pt-10 pb-12 sm:pb-16 scroll-mt-24">
             <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
-              <GlowAccents size={340} />
+              <GlowAccents size={340} parallax maxShift={1.6} />
             </div>
             <div className="relative z-[1]">
               <h2 className="text-2xl font-bold tracking-tight text-blue-900 drop-shadow-[0_0_6px_rgba(30,58,138,0.25)] dark:text-amber-200 dark:drop-shadow-[0_0_16px_rgba(253,230,138,0.55)]">Projects</h2>
               <div className="mt-6 grid gap-6 sm:grid-cols-2">
-                <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover-accent focus-accent">
+                <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover-accent focus-accent hover:-translate-y-1 hover:shadow-lg">
                   <div className="flex items-center justify-between">
                     <h3 className="font-semibold text-blue-900 drop-shadow-[0_0_6px_rgba(30,58,138,0.25)] dark:text-amber-200 dark:drop-shadow-[0_0_14px_rgba(253,230,138,0.5)]">CHSN Running Platform</h3>
                     <a
@@ -461,7 +493,7 @@ export default function App() {
 
                   {/* Expandable details */}
                   <details className="mt-4 text-sm">
-                    <summary className="cursor-pointer select-none text-muted transition-colors hover-accent">
+                    <summary className="cursor-pointer select-none text-muted transition-colors hover:text-fg/90 focus:outline-none focus-visible:underline focus-visible:decoration-dotted focus-visible:decoration-token">
                       More details
                     </summary>
                     <div className="mt-2 text-muted space-y-3">
@@ -484,7 +516,7 @@ export default function App() {
                   </details>
                 </div>
 
-                <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover-accent focus-accent">
+                <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover-accent focus-accent hover:-translate-y-1 hover:shadow-lg will-change-transform">
                   <div className="flex items-center justify-between">
                     <h3 className="font-semibold text-blue-900 drop-shadow-[0_0_6px_rgba(30,58,138,0.25)] dark:text-amber-200 dark:drop-shadow-[0_0_14px_rgba(253,230,138,0.5)]">Personal Site</h3>
                     <a
@@ -517,11 +549,11 @@ export default function App() {
           {/* Education */}
           <section id="education" className="relative mx-auto max-w-6xl px-4 pt-8 sm:pt-10 pb-12 sm:pb-16 scroll-mt-24">
             <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
-              <GlowAccents size={320} />
+              <GlowAccents size={320} parallax maxShift={1.6} />
             </div>
             <div className="relative z-[1]">
               <h2 className="text-2xl font-bold tracking-tight text-blue-900 drop-shadow-[0_0_6px_rgba(30,58,138,0.25)] dark:text-amber-200 dark:drop-shadow-[0_0_16px_rgba(253,230,138,0.55)]">Education</h2>
-              <div className="mt-6 relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover-accent focus-accent">
+              <div className="mt-6 relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover-accent focus-accent hover:-translate-y-1 hover:shadow-lg">
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-xl font-semibold text-blue-900 drop-shadow-[0_0_6px_rgba(30,58,138,0.25)] dark:text-amber-200 dark:drop-shadow-[0_0_14px_rgba(253,230,138,0.5)]">Kennesaw State University</h3>
@@ -565,13 +597,13 @@ export default function App() {
           {/* Hobbies */}
           <section id="hobbies" className="relative mx-auto max-w-6xl px-4 pt-8 sm:pt-10 pb-12 sm:pb-16 scroll-mt-24">
             <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
-              <GlowAccents size={280} />
+              <GlowAccents size={280} parallax maxShift={1.6} />
             </div>
             <div className="relative z-[1]">
               <h2 className="text-2xl font-bold tracking-tight mt-4 mb-4 text-blue-900 drop-shadow-[0_0_6px_rgba(30,58,138,0.25)] dark:text-amber-200 dark:drop-shadow-[0_0_16px_rgba(253,230,138,0.55)]">Hobbies</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {/* Running & Coaching */}
-                <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover-accent focus-accent">
+                <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover-accent focus-accent hover:-translate-y-1 hover:shadow-lg">
                   <h3 className="font-semibold text-blue-900 drop-shadow-[0_0_6px_rgba(30,58,138,0.25)] dark:text-amber-200 dark:drop-shadow-[0_0_14px_rgba(253,230,138,0.5)]">Running &amp; Coaching</h3>
                   <p className="mt-2 text-sm text-muted">
                     I began my running career joining the track team in high school as a hurdler, now I run road races from 1 mile to marathons.
@@ -608,7 +640,7 @@ export default function App() {
                 </div>
 
                 {/* Reading */}
-                <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover-accent focus-accent">
+                <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover-accent focus-accent hover:-translate-y-1 hover:shadow-lg">
                   <h3 className="font-semibold text-blue-900 drop-shadow-[0_0_6px_rgba(30,58,138,0.25)] dark:text-amber-200 dark:drop-shadow-[0_0_14px_rgba(253,230,138,0.5)]">Reading</h3>
                   <p className="mt-2 text-sm text-muted">
                     I love to read — my favorite genres are self‑improvement, science, and sci‑fi/fantasy.
@@ -622,7 +654,7 @@ export default function App() {
                 </div>
 
                 {/* Learning Spanish */}
-                <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover-accent focus-accent">
+                <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover-accent focus-accent hover:-translate-y-1 hover:shadow-lg">
                   <h3 className="font-semibold text-blue-900 drop-shadow-[0_0_6px_rgba(30,58,138,0.25)] dark:text-amber-200 dark:drop-shadow-[0_0_14px_rgba(253,230,138,0.5)]">Learning Spanish</h3>
                   <p className="mt-2 text-sm text-muted">
                     I recently surpassed the 1000‑day streak on Duolingo — which I’m proud of. I also learn Spanish from my wife, who is Puerto Rican.
@@ -636,10 +668,10 @@ export default function App() {
           {/* Contact */}
           <section id="contact" className="relative mx-auto max-w-6xl px-4 pt-8 sm:pt-10 pb-12 sm:pb-16 scroll-mt-24">
             <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
-              <GlowAccents size={320} />
+              <GlowAccents size={320} parallax maxShift={1.6} />
             </div>
             <div className="relative z-[1]">
-              <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-6 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover-accent focus-accent">
+              <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-6 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover-accent focus-accent hover:-translate-y-1 hover:shadow-lg">
                 <h2 className="text-2xl font-bold tracking-tight text-blue-900 drop-shadow-[0_0_6px_rgba(30,58,138,0.25)] dark:text-amber-200 dark:drop-shadow-[0_0_16px_rgba(253,230,138,0.55)]">Let’s work together</h2>
                 <p className="mt-2 text-sm text-muted">
                   Email me or reach out on LinkedIn. I’m happy to chat about roles, projects, or collaboration.
