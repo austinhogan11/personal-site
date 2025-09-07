@@ -1,6 +1,84 @@
 import { useEffect, useState, useMemo } from "react";
+// Shared section list and observer options used by both nav components
+const SECTIONS = [
+  { id: "top", label: "Overview" },
+  { id: "experience", label: "Experience" },
+  { id: "projects", label: "Projects" },
+  { id: "education", label: "Education" },
+  { id: "hobbies", label: "Hobbies" },
+  { id: "contact", label: "Contact" },
+];
+
+// Scroll spy root margin and glow sizing tokens
+const SCROLL_ROOT_MARGIN = "-40% 0px -55% 0px";
+// Rebuild observer options to reference the shared margin
+const OBSERVER_OPTIONS = { rootMargin: SCROLL_ROOT_MARGIN, threshold: [0, 0.25, 0.5, 1] };
+
+const GLOW_MAX_SHIFT = 1.6;
+const GLOW_MAX_SHIFT_HERO = 1.2; // hero card has a slightly gentler parallax
+
+const GLOW_SIZE = {
+  HERO: 180,
+  EXPERIENCE: 320,
+  PROJECTS: 340,
+  EDUCATION: 320,
+  HOBBIES: 280,
+  CONTACT: 320,
+};
+// --- Shared UI tokens/components -------------------------------------------------
+const CARD_BASE = "relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover-accent focus-accent hover:-translate-y-1 hover:shadow-lg";
+
+function Card({ className = "", children }) {
+  return <div className={`${CARD_BASE} ${className}`}>{children}</div>;
+}
+
+function TagChip({ as = 'span', className = '', children }) {
+  const Tag = as;
+  return (
+    <Tag className={`rounded bg-card border border-token px-2 py-0.5 ${className}`}>{children}</Tag>
+  );
+}
+
+function IconGitHub({ className = "", ...props }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true" focusable="false" {...props}>
+      <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2.1c-3.2.7-3.9-1.5-3.9-1.5-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.6 1 1.6 1 .9 1.6 2.5 1.1 3.1.9.1-.7.3-1.1.6-1.4-2.6-.3-5.4-1.3-5.4-5.9 0-1.3.5-2.4 1.2-3.3-.1-.3-.5-1.6.1-3.2 0 0 1-.3 3.4 1.2a11.7 11.7 0 0 1 6.2 0c2.4-1.5 3.4-1.2 3.4-1.2.6 1.6.2 2.9.1 3.2.8.9 1.2 2 1.2 3.3 0 4.6-2.8 5.6-5.4 5.9.4.3.7.9.7 1.9v2.9c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.65 18.35.5 12 .5z"/>
+    </svg>
+  );
+}
+
+function IconLinkedIn({ className = "", ...props }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true" focusable="false" {...props}>
+      <path d="M4.98 3.5C4.98 4.88 3.86 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5zM.5 8.5h4V23h-4V8.5zM8.5 8.5h3.83v1.98h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.08V23h-4v-5.71c0-1.36-.02-3.11-1.9-3.11-1.9 0-2.19 1.49-2.19 3.02V23h-4V8.5z"/>
+    </svg>
+  );
+}
+
+function IconMail({ className = "", ...props }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true" focusable="false" {...props}>
+      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm0 2v.01L12 13 20 6.01V6H4zm0 12h16V8l-8 7-8-7v10z"/>
+    </svg>
+  );
+}
+// -------------------------------------------------------------------------------
+/*
+  Personal site App.jsx
+  ---------------------
+  Overview of what this file implements:
+  - GlowAccents: lightweight background glow blobs with optional pointer parallax.
+  - ScrollSpyNav / ScrollSpyTopNav: side rail and top nav that highlight the section in view via IntersectionObserver.
+  - App(): page shell, theme bootstrap, Duolingo streak demo counter, scroll progress bar, and all sections (Hero, Experience, Projects, Education, Hobbies, Contact).
+
+  Design goals we implemented:
+  - Subtle, performant motion (prefers-reduced-motion respected).
+  - Dark-first theme with soft amber/indigo highlights and hover/focus “glow” accents.
+  - Accessible semantics: aria labels, focus styles, reduced motion checks, and visible indicators for the active section.
+*/
+// Decorative background gradients used behind cards/sections; very cheap to render.
 function GlowAccents({ size = 160, parallax = false, maxShift = 1.6 }) {
-  // Predefined gradient combos (kept static so Tailwind includes them)
+  // Two small pools of gradient combos. Keeping class strings static ensures Tailwind includes them in the build.
   const topCombos = [
     "bg-gradient-to-br from-sky-500/10 via-fuchsia-500/10 to-transparent",
     "bg-gradient-to-br from-violet-500/10 via-sky-400/10 to-transparent",
@@ -14,7 +92,7 @@ function GlowAccents({ size = 160, parallax = false, maxShift = 1.6 }) {
     "bg-gradient-to-tr from-rose-300/10 via-violet-400/10 to-transparent",
   ];
 
-  // Randomize once per mount
+  // Randomize the variant once per mount so each card looks slightly unique but remains stable across re-renders.
   const pick = useMemo(() => ({
     topIdx: Math.floor(Math.random() * topCombos.length),
     botIdx: Math.floor(Math.random() * bottomCombos.length),
@@ -34,9 +112,11 @@ function GlowAccents({ size = 160, parallax = false, maxShift = 1.6 }) {
   const [shift, setShift] = useState({ x: 0, y: 0 });
   useEffect(() => {
     if (!parallax || typeof window === 'undefined') return;
+    // Respect the user's reduced motion preference and skip the tiny parallax if set.
     const prefersReduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReduce) return;
     let raf = 0;
+    // Map pointer position to a tiny X/Y shift (maxShift ~1–2px) and throttle via rAF.
     const onMove = (e) => {
       const nx = (e.clientX / window.innerWidth - 0.5) * (maxShift * 2);
       const ny = (e.clientY / window.innerHeight - 0.5) * (maxShift * 2);
@@ -54,6 +134,7 @@ function GlowAccents({ size = 160, parallax = false, maxShift = 1.6 }) {
 
   return (
     <>
+      {/* Two layered blobs (top-left and bottom-right) to create soft depth */}
       <div
         aria-hidden
         className={`pointer-events-none absolute rounded-full blur-2xl will-change-transform ${topCombos[pick.topIdx]}`}
@@ -80,29 +161,24 @@ function GlowAccents({ size = 160, parallax = false, maxShift = 1.6 }) {
   );
 }
 
+// Left rail navigation for large screens. Highlights the section currently intersecting the viewport.
 function ScrollSpyNav() {
-  const sections = [
-    { id: "top", label: "Overview" },
-    { id: "experience", label: "Experience" },
-    { id: "projects", label: "Projects" },
-    { id: "education", label: "Education" },
-    { id: "hobbies", label: "Hobbies" },
-    { id: "contact", label: "Contact" },
-  ];
+  // Order must match the section IDs used below in the page content.
   const [active, setActive] = useState("top");
 
 
   useEffect(() => {
+    // Observe each section and set `active` to the one that crosses our center-ish rootMargin.
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) setActive(entry.target.id);
         });
       },
-      { rootMargin: "-40% 0px -55% 0px", threshold: [0, 0.25, 0.5, 1] }
+      OBSERVER_OPTIONS
     );
 
-    sections.forEach(({ id }) => {
+    SECTIONS.forEach(({ id }) => {
       const el = document.getElementById(id);
       if (el) observer.observe(el);
     });
@@ -111,9 +187,9 @@ function ScrollSpyNav() {
 
   return (
     <nav aria-label="Section navigation" className="relative hidden lg:flex lg:flex-col gap-8 text-sm select-none">
-      {/* vertical rail */}
+      {/* vertical guide rail */}
       <div className="absolute top-0 bottom-0 left-[7px] w-px bg-token/40" aria-hidden />
-      {sections.map((s) => (
+      {SECTIONS.map((s) => (
         <a
           key={s.id}
           href={`#${s.id}`}
@@ -145,27 +221,21 @@ function ScrollSpyNav() {
   );
 }
 
+// Compact top nav for small screens; same logic as the left rail but horizontally scrollable.
 function ScrollSpyTopNav() {
-  const sections = [
-    { id: "top", label: "Overview" },
-    { id: "experience", label: "Experience" },
-    { id: "projects", label: "Projects" },
-    { id: "education", label: "Education" },
-    { id: "hobbies", label: "Hobbies" },
-    { id: "contact", label: "Contact" },
-  ];
   const [active, setActive] = useState("top");
 
   useEffect(() => {
+    // Same intersection logic as the desktop rail.
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) setActive(entry.target.id);
         });
       },
-      { rootMargin: "-40% 0px -55% 0px", threshold: [0, 0.25, 0.5, 1] }
+      OBSERVER_OPTIONS
     );
-    sections.forEach(({ id }) => {
+    SECTIONS.forEach(({ id }) => {
       const el = document.getElementById(id);
       if (el) observer.observe(el);
     });
@@ -176,7 +246,7 @@ function ScrollSpyTopNav() {
     <nav className="lg:hidden sticky top-0 z-10 bg-bg/80 backdrop-blur border-b border-token">
       <div className="mx-auto max-w-[1100px] px-4 overflow-x-auto">
         <ul className="flex items-center gap-6 py-3">
-          {sections.map((s) => (
+          {SECTIONS.map((s) => (
             <li key={s.id} className="shrink-0">
               <a href={`#${s.id}`} aria-current={active === s.id ? 'page' : undefined} className="group inline-flex items-center gap-2">
                 <span
@@ -199,8 +269,10 @@ function ScrollSpyTopNav() {
   );
 }
 
+// Page shell: sets theme/motion, computes demo counters, and renders all sections.
 export default function App() {
   useEffect(() => {
+    // Add a tiny style tag at runtime so we can enable smooth scrolling unless the user prefers reduced motion.
     const style = document.createElement('style');
     const prefersReduce =
       typeof window !== 'undefined' &&
@@ -209,15 +281,17 @@ export default function App() {
       ? 'html{font-size:90%}'
       : 'html{scroll-behavior:smooth;font-size:90%}';
     document.head.appendChild(style);
-    // default to dark theme
+    // Default to dark theme on first load; your CSS uses `.dark` to switch tokens.
     document.documentElement.classList.add('dark');
     return () => {
       if (style && style.parentNode) style.parentNode.removeChild(style);
     };
   }, []);
 
+  // Demo: live Duolingo streak counter that increments by calendar day using localStorage as an anchor.
   const [duoStreak, setDuoStreak] = useState(1002);
   useEffect(() => {
+    // Compute days since a stored base date (or initialize it) and add to the base count.
     const today = new Date();
     const keyBase = 'duoBaseDate';
     const keyCount = 'duoBaseCount';
@@ -234,26 +308,42 @@ export default function App() {
     setDuoStreak(baseCount + Math.max(0, days));
   }, []);
 
-  // Scroll progress state and effect
+  // Scroll progress bar at the very top of the page.
   const [scrollProgress, setScrollProgress] = useState(0);
   useEffect(() => {
-    const handleScroll = () => {
+    // Track scroll position as a percentage of total document height with rAF throttling.
+    let ticking = false;
+
+    const update = () => {
       const scrollTop = window.scrollY;
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = (scrollTop / docHeight) * 100;
+      const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
       setScrollProgress(progress);
+      ticking = false;
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    // Initialize in case the user lands on a scrolled position
+    update();
+
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   return (
     <div className="min-h-screen bg-bg text-fg">
-      {/* Progress bar */}
+      {/* Fixed top progress bar that fills as you scroll */}
       <div
         className="fixed top-0 left-0 h-1 bg-amber-300 dark:bg-amber-200 z-50 transition-all duration-150 shadow-[0_0_8px_rgba(253,230,138,.5)]"
         style={{ width: `${scrollProgress}%` }}
       />
+      {/* Quick actions: GitHub, LinkedIn, Email */}
       <div className="fixed top-3 right-3 z-20 flex flex-col items-end gap-2">
         <a
           href="https://github.com/austinhogan11"
@@ -263,9 +353,7 @@ export default function App() {
           onClick={(e) => e.currentTarget.blur()}
           className="theme-toggle group inline-grid place-items-center w-9 h-9 text-muted transition-shadow transition-colors border border-zinc-400 dark:border-zinc-500 hover-accent focus-accent"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 transition-colors" aria-hidden="true" focusable="false">
-            <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2.1c-3.2.7-3.9-1.5-3.9-1.5-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.6 1 1.6 1 .9 1.6 2.5 1.1 3.1.9.1-.7.3-1.1.6-1.4-2.6-.3-5.4-1.3-5.4-5.9 0-1.3.5-2.4 1.2-3.3-.1-.3-.5-1.6.1-3.2 0 0 1-.3 3.4 1.2a11.7 11.7 0 0 1 6.2 0c2.4-1.5 3.4-1.2 3.4-1.2.6 1.6.2 2.9.1 3.2.8.9 1.2 2 1.2 3.3 0 4.6-2.8 5.6-5.4 5.9.4.3.7.9.7 1.9v2.9c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.65 18.35.5 12 .5z" />
-          </svg>
+          <IconGitHub className="w-5 h-5 transition-colors" />
         </a>
         <a
           href="https://www.linkedin.com/in/austin-hogan-663164151/"
@@ -275,9 +363,7 @@ export default function App() {
           onClick={(e) => e.currentTarget.blur()}
           className="theme-toggle group inline-grid place-items-center w-9 h-9 text-muted transition-shadow transition-colors border border-zinc-400 dark:border-zinc-500 hover-accent focus-accent"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 transition-colors" aria-hidden="true" focusable="false">
-            <path d="M4.98 3.5C4.98 4.88 3.86 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5zM.5 8.5h4V23h-4V8.5zM8.5 8.5h3.83v1.98h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.08V23h-4v-5.71c0-1.36-.02-3.11-1.9-3.11-1.9 0-2.19 1.49-2.19 3.02V23h-4V8.5z" />
-          </svg>
+          <IconLinkedIn className="w-5 h-5 transition-colors" />
         </a>
         <a
           href="mailto:austinhogan15@gmail.com"
@@ -285,20 +371,18 @@ export default function App() {
           onClick={(e) => e.currentTarget.blur()}
           className="theme-toggle group inline-grid place-items-center w-9 h-9 text-muted transition-shadow transition-colors border border-zinc-400 dark:border-zinc-500 hover-accent focus-accent"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 transition-colors" aria-hidden="true" focusable="false">
-            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm0 2v.01L12 13 20 6.01V6H4zm0 12h16V8l-8 7-8-7v10z" />
-          </svg>
+          <IconMail className="w-5 h-5 transition-colors" />
         </a>
       </div>
       <div className="grid lg:grid-cols-[auto_1fr]">
+        {/* Desktop left rail scroll‑spy */}
         <aside className="sticky top-0 h-[100svh] hidden lg:flex items-center justify-start pl-6">
           <ScrollSpyNav />
         </aside>
         <main className="pb-16 mx-auto max-w-[1100px] px-4">
           <ScrollSpyTopNav />
-          {/* Hero */}
           <section id="top" className="relative mx-auto max-w-6xl px-4 pt-16 sm:pt-24 pb-8 sm:pb-10 scroll-mt-24">
-            {/* soft background glow accents */}
+            {/* soft background glow accents behind the hero */}
             <div aria-hidden className="pointer-events-none absolute -top-10 -left-20 h-72 w-72 rounded-full bg-gradient-to-br from-sky-500/10 via-fuchsia-500/10 to-transparent blur-2xl" />
             <div aria-hidden className="pointer-events-none absolute -bottom-12 -right-16 h-72 w-72 rounded-full bg-gradient-to-tr from-amber-200/10 via-sky-400/10 to-transparent blur-2xl" />
             <div className="grid gap-10 md:grid-cols-[1.65fr_1.1fr] md:gap-12 items-start">
@@ -312,11 +396,6 @@ export default function App() {
                     leading-[1.12] sm:leading-[1.08] pb-1">
                       Software Engineer &amp; Builder
                     </span>
-                  {/* subtle gradient underline */}
-                  <span
-                    aria-hidden
-                    className="absolute inset-x-0 -bottom-[6px] h-[2px] rounded-full bg-gradient-to-r from-indigo-300/20 via-indigo-200/20 to-sky-300/20 dark:from-fuchsia-300/25 dark:via-violet-200/25 dark:to-sky-300/25 relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/5 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity"
-                  />
                   </span>
                 </h1>
               <div className="mt-5 max-w-3xl space-y-2 pl-4 border-l border-blue-900/20 dark:border-amber-200/25">
@@ -353,8 +432,8 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Quick details card */}
-              <aside className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 md:p-6 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover-accent focus-accent hover:-translate-y-1 hover:shadow-lg">
+              {/* Quick details card with glow accents and fast facts */}
+              <Card className="p-5 md:p-6">
                 {/* gentle radial behind the title */}
                 <div aria-hidden className="pointer-events-none absolute -top-24 -right-24 h-64 w-64 rounded-full bg-gradient-to-tr from-sky-400/10 via-fuchsia-400/10 to-transparent blur-3xl" />
 
@@ -406,8 +485,9 @@ export default function App() {
                     </div>
                   </div>
                 </dl>
-                <GlowAccents size={180} parallax maxShift={1.2} />
-              </aside>
+                {/* Ambient background glow for depth; parallax auto‑disables for reduced‑motion users */}
+                <GlowAccents size={GLOW_SIZE.HERO} parallax maxShift={GLOW_MAX_SHIFT_HERO} />
+              </Card>
             </div>
           </section>
           <hr className="border-t border-token/40 mx-auto max-w-[1100px]" />
@@ -415,12 +495,14 @@ export default function App() {
           {/* Experience */}
           <section id="experience" className="relative mx-auto max-w-6xl px-4 pt-8 sm:pt-10 pb-12 sm:pb-16 scroll-mt-24">
             <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
-              <GlowAccents size={320} parallax maxShift={1.6} />
+              {/* Ambient background glow for depth; parallax auto‑disables for reduced‑motion users */}
+              <GlowAccents size={GLOW_SIZE.EXPERIENCE} parallax maxShift={GLOW_MAX_SHIFT} />
             </div>
             <div className="relative z-[1]">
+              {/* Experience timeline/card */}
               <h2 className="text-2xl font-bold tracking-tight text-blue-900 drop-shadow-[0_0_6px_rgba(30,58,138,0.25)] dark:text-amber-200 dark:drop-shadow-[0_0_16px_rgba(253,230,138,0.55)]">Experience</h2>
               <div className="mt-6 space-y-4">
-                <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover-accent focus-accent hover:-translate-y-1 hover:shadow-lg">
+                <Card className="p-5">
                   <div className="flex items-center justify-between">
                     <div>
                       <h3 className="font-semibold text-blue-900 drop-shadow-[0_0_6px_rgba(30,58,138,0.25)] dark:text-amber-200 dark:drop-shadow-[0_0_14px_rgba(253,230,138,0.5)]">Software Engineer (Cloud DevOps / Platform)</h3>
@@ -442,19 +524,19 @@ export default function App() {
                   <div className="mt-5 pt-4 border-t border-token">
                     <h4 className="text-sm font-semibold">Skills &amp; Tools</h4>
                     <ul className="mt-2 flex flex-wrap gap-2 text-sm text-muted">
-                      <li className="rounded bg-card border border-token px-2 py-0.5">Cloud DevOps &amp; Infrastructure (GCP)</li>
-                      <li className="rounded bg-card border border-token px-2 py-0.5">Application &amp; Infrastructure Monitoring</li>
-                      <li className="rounded bg-card border border-token px-2 py-0.5">Cloud Cost Optimization</li>
-                      <li className="rounded bg-card border border-token px-2 py-0.5">IaC (Terraform)</li>
-                      <li className="rounded bg-card border border-token px-2 py-0.5">Linux</li>
-                      <li className="rounded bg-card border border-token px-2 py-0.5">Git / GitLab</li>
-                      <li className="rounded bg-card border border-token px-2 py-0.5">CI/CD (Jenkins &amp; GitLab)</li>
-                      <li className="rounded bg-card border border-token px-2 py-0.5">Kubernetes / GKE</li>
-                      <li className="rounded bg-card border border-token px-2 py-0.5">Python</li>
-                      <li className="rounded bg-card border border-token px-2 py-0.5">Bash / Shell Scripting</li>
+                      <TagChip as="li">Cloud DevOps &amp; Infrastructure (GCP)</TagChip>
+                      <TagChip as="li">Application &amp; Infrastructure Monitoring</TagChip>
+                      <TagChip as="li">Cloud Cost Optimization</TagChip>
+                      <TagChip as="li">IaC (Terraform)</TagChip>
+                      <TagChip as="li">Linux</TagChip>
+                      <TagChip as="li">Git / GitLab</TagChip>
+                      <TagChip as="li">CI/CD (Jenkins &amp; GitLab)</TagChip>
+                      <TagChip as="li">Kubernetes / GKE</TagChip>
+                      <TagChip as="li">Python</TagChip>
+                      <TagChip as="li">Bash / Shell Scripting</TagChip>
                     </ul>
                   </div>
-                </div>
+                </Card>
               </div>
             </div>
           </section>
@@ -463,12 +545,14 @@ export default function App() {
           {/* Projects */}
           <section id="projects" className="relative mx-auto max-w-6xl px-4 pt-8 sm:pt-10 pb-12 sm:pb-16 scroll-mt-24">
             <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
-              <GlowAccents size={340} parallax maxShift={1.6} />
+              {/* Ambient background glow for depth; parallax auto‑disables for reduced‑motion users */}
+              <GlowAccents size={GLOW_SIZE.PROJECTS} parallax maxShift={GLOW_MAX_SHIFT} />
             </div>
             <div className="relative z-[1]">
+              {/* Projects cards */}
               <h2 className="text-2xl font-bold tracking-tight text-blue-900 drop-shadow-[0_0_6px_rgba(30,58,138,0.25)] dark:text-amber-200 dark:drop-shadow-[0_0_16px_rgba(253,230,138,0.55)]">Projects</h2>
               <div className="mt-6 grid gap-6 sm:grid-cols-2">
-                <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover-accent focus-accent hover:-translate-y-1 hover:shadow-lg">
+                <Card className="p-5">
                   <div className="flex items-center justify-between">
                     <h3 className="font-semibold text-blue-900 drop-shadow-[0_0_6px_rgba(30,58,138,0.25)] dark:text-amber-200 dark:drop-shadow-[0_0_14px_rgba(253,230,138,0.5)]">CHSN Running Platform</h3>
                     <a
@@ -479,16 +563,7 @@ export default function App() {
                       title="View repository on GitHub"
                       className="group inline-grid place-items-center w-9 h-9 rounded-md text-muted transition-shadow transition-colors border border-zinc-400 dark:border-zinc-500 hover-accent focus-accent"
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                        className="w-5 h-5 transition-colors"
-                        aria-hidden="true"
-                        focusable="false"
-                      >
-                        <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2.1c-3.2.7-3.9-1.5-3.9-1.5-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.6 1 1.6 1 .9 1.6 2.5 1.1 3.1.9.1-.7.3-1.1.6-1.4-2.6-.3-5.4-1.3-5.4-5.9 0-1.3.5-2.4 1.2-3.3-.1-.3-.5-1.6.1-3.2 0 0 1-.3 3.4 1.2a11.7 11.7 0 0 1 6.2 0c2.4-1.5 3.4-1.2 3.4-1.2.6 1.6.2 2.9.1 3.2.8.9 1.2 2 1.2 3.3 0 4.6-2.8 5.6-5.4 5.9.4.3.7.9.7 1.9v2.9c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.65 18.35.5 12 .5z" />
-                      </svg>
+                      <IconGitHub className="w-5 h-5 transition-colors" />
                     </a>
                   </div>
 
@@ -499,14 +574,14 @@ export default function App() {
 
                   {/* Tech chips */}
                   <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-muted">
-                    <span className="rounded bg-card border border-token px-2 py-0.5">Python</span>
-                    <span className="rounded bg-card border border-token px-2 py-0.5">Docker</span>
-                    <span className="rounded bg-card border border-token px-2 py-0.5">GCP</span>
-                    <span className="rounded bg-card border border-token px-2 py-0.5">Cloud Run</span>
-                    <span className="rounded bg-card border border-token px-2 py-0.5">GKE</span>
-                    <span className="rounded bg-card border border-token px-2 py-0.5">Artifact Registry</span>
-                    <span className="rounded bg-card border border-token px-2 py-0.5">Terraform</span>
-                    <span className="rounded bg-card border border-token px-2 py-0.5">GitHub Actions</span>
+                    <TagChip>Python</TagChip>
+                    <TagChip>Docker</TagChip>
+                    <TagChip>GCP</TagChip>
+                    <TagChip>Cloud Run</TagChip>
+                    <TagChip>GKE</TagChip>
+                    <TagChip>Artifact Registry</TagChip>
+                    <TagChip>Terraform</TagChip>
+                    <TagChip>GitHub Actions</TagChip>
                   </div>
 
                   {/* Expandable details */}
@@ -532,9 +607,9 @@ export default function App() {
                       </div>
                     </div>
                   </details>
-                </div>
+                </Card>
 
-                <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover-accent focus-accent hover:-translate-y-1 hover:shadow-lg will-change-transform">
+                <Card className="p-5 will-change-transform">
                   <div className="flex items-center justify-between">
                     <h3 className="font-semibold text-blue-900 drop-shadow-[0_0_6px_rgba(30,58,138,0.25)] dark:text-amber-200 dark:drop-shadow-[0_0_14px_rgba(253,230,138,0.5)]">Personal Site</h3>
                     <a
@@ -545,20 +620,18 @@ export default function App() {
                       title="View repository on GitHub"
                       className="group inline-grid place-items-center w-9 h-9 rounded-md text-muted transition-shadow transition-colors border border-zinc-400 dark:border-zinc-500 hover-accent focus-accent"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 transition-colors" aria-hidden="true" focusable="false">
-                        <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2.1c-3.2.7-3.9-1.5-3.9-1.5-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.6 1 1.6 1 .9 1.6 2.5 1.1 3.1.9.1-.7.3-1.1.6-1.4-2.6-.3-5.4-1.3-5.4-5.9 0-1.3.5-2.4 1.2-3.3-.1-.3-.5-1.6.1-3.2 0 0 1-.3 3.4 1.2a11.7 11.7 0 0 1 6.2 0c2.4-1.5 3.4-1.2 3.4-1.2.6 1.6.2 2.9.1 3.2.8.9 1.2 2 1.2 3.3 0 4.6-2.8 5.6-5.4 5.9.4.3.7.9.7 1.9v2.9c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.65 18.35.5 12 .5z" />
-                      </svg>
+                      <IconGitHub className="w-5 h-5 transition-colors" />
                     </a>
                   </div>
                   <p className="mt-2 text-sm text-muted">
                     Personal portfolio &amp; resume site that showcases my Cloud DevOps work and projects. Built with React (Vite) and Tailwind, with small design tokens and a clean dark theme.
                   </p>
                   <div className="mt-3 flex flex-wrap gap-2 text-xs text-muted">
-                    <span className="rounded bg-card border border-token px-2 py-0.5">React</span>
-                    <span className="rounded bg-card border border-token px-2 py-0.5">Tailwind</span>
-                    <span className="rounded bg-card border border-token px-2 py-0.5">Vite</span>
+                    <TagChip>React</TagChip>
+                    <TagChip>Tailwind</TagChip>
+                    <TagChip>Vite</TagChip>
                   </div>
-                </div>
+                </Card>
               </div>
             </div>
           </section>
@@ -567,11 +640,13 @@ export default function App() {
           {/* Education */}
           <section id="education" className="relative mx-auto max-w-6xl px-4 pt-8 sm:pt-10 pb-12 sm:pb-16 scroll-mt-24">
             <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
-              <GlowAccents size={320} parallax maxShift={1.6} />
+              {/* Ambient background glow for depth; parallax auto‑disables for reduced‑motion users */}
+              <GlowAccents size={GLOW_SIZE.EDUCATION} parallax maxShift={GLOW_MAX_SHIFT} />
             </div>
             <div className="relative z-[1]">
+              {/* Education details */}
               <h2 className="text-2xl font-bold tracking-tight text-blue-900 drop-shadow-[0_0_6px_rgba(30,58,138,0.25)] dark:text-amber-200 dark:drop-shadow-[0_0_16px_rgba(253,230,138,0.55)]">Education</h2>
-              <div className="mt-6 relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover-accent focus-accent hover:-translate-y-1 hover:shadow-lg">
+              <Card className="mt-6 p-5">
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-xl font-semibold text-blue-900 drop-shadow-[0_0_6px_rgba(30,58,138,0.25)] dark:text-amber-200 dark:drop-shadow-[0_0_14px_rgba(253,230,138,0.5)]">Kennesaw State University</h3>
@@ -600,14 +675,12 @@ export default function App() {
                         className="ml-2 inline-flex items-center align-middle text-muted transition-colors group hover-accent"
                         title="View repository on GitHub"
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 transition-colors" aria-hidden="true" focusable="false">
-                          <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2.1c-3.2.7-3.9-1.5-3.9-1.5-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.6 1 1.6 1 .9 1.6 2.5 1.1 3.1.9.1-.7.3-1.1.6-1.4-2.6-.3-5.4-1.3-5.4-5.9 0-1.3.5-2.4 1.2-3.3-.1-.3-.5-1.6.1-3.2 0 0 1-.3 3.4 1.2a11.7 11.7 0 0 1 6.2 0c2.4-1.5 3.4-1.2 3.4-1.2.6 1.6.2 2.9.1 3.2.8.9 1.2 2 1.2 3.3 0 4.6-2.8 5.6-5.4 5.9.4.3.7.9.7 1.9v2.9c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.65 18.35.5 12 .5z" />
-                        </svg>
+                        <IconGitHub className="w-4 h-4 transition-colors" />
                       </a>
                     </li>
                   </ul>
                 </div>
-              </div>
+              </Card>
             </div>
           </section>
           <hr className="border-t border-token/40 mx-auto max-w-[1100px]" />
@@ -615,13 +688,15 @@ export default function App() {
           {/* Hobbies */}
           <section id="hobbies" className="relative mx-auto max-w-6xl px-4 pt-8 sm:pt-10 pb-12 sm:pb-16 scroll-mt-24">
             <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
-              <GlowAccents size={280} parallax maxShift={1.6} />
+              {/* Ambient background glow for depth; parallax auto‑disables for reduced‑motion users */}
+              <GlowAccents size={GLOW_SIZE.HOBBIES} parallax maxShift={GLOW_MAX_SHIFT} />
             </div>
             <div className="relative z-[1]">
+              {/* Hobbies grid */}
               <h2 className="text-2xl font-bold tracking-tight mt-4 mb-4 text-blue-900 drop-shadow-[0_0_6px_rgba(30,58,138,0.25)] dark:text-amber-200 dark:drop-shadow-[0_0_16px_rgba(253,230,138,0.55)]">Hobbies</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {/* Running & Coaching */}
-                <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover-accent focus-accent hover:-translate-y-1 hover:shadow-lg">
+                <Card className="p-5">
                   <h3 className="font-semibold text-blue-900 drop-shadow-[0_0_6px_rgba(30,58,138,0.25)] dark:text-amber-200 dark:drop-shadow-[0_0_14px_rgba(253,230,138,0.5)]">Running &amp; Coaching</h3>
                   <p className="mt-2 text-sm text-muted">
                     I began my running career joining the track team in high school as a hurdler, now I run road races from 1 mile to marathons.
@@ -655,10 +730,10 @@ export default function App() {
                       <li>Marathon: 3:13</li>
                     </ul>
                   </div>
-                </div>
+                </Card>
 
                 {/* Reading */}
-                <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover-accent focus-accent hover:-translate-y-1 hover:shadow-lg">
+                <Card className="p-5">
                   <h3 className="font-semibold text-blue-900 drop-shadow-[0_0_6px_rgba(30,58,138,0.25)] dark:text-amber-200 dark:drop-shadow-[0_0_14px_rgba(253,230,138,0.5)]">Reading</h3>
                   <p className="mt-2 text-sm text-muted">
                     I love to read — my favorite genres are self‑improvement, science, and sci‑fi/fantasy.
@@ -669,15 +744,15 @@ export default function App() {
                   <p className="mt-3 text-sm text-muted">
                     I am also reading my way through the canon Star Wars novels (there are a lot!).
                   </p>
-                </div>
+                </Card>
 
                 {/* Learning Spanish */}
-                <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover-accent focus-accent hover:-translate-y-1 hover:shadow-lg">
+                <Card className="p-5">
                   <h3 className="font-semibold text-blue-900 drop-shadow-[0_0_6px_rgba(30,58,138,0.25)] dark:text-amber-200 dark:drop-shadow-[0_0_14px_rgba(253,230,138,0.5)]">Learning Spanish</h3>
                   <p className="mt-2 text-sm text-muted">
                     I recently surpassed the 1000‑day streak on Duolingo — which I’m proud of. I also learn Spanish from my wife, who is Puerto Rican.
                   </p>
-                </div>
+                </Card>
               </div>
             </div>
           </section>
@@ -686,10 +761,12 @@ export default function App() {
           {/* Contact */}
           <section id="contact" className="relative mx-auto max-w-6xl px-4 pt-8 sm:pt-10 pb-12 sm:pb-16 scroll-mt-24">
             <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
-              <GlowAccents size={320} parallax maxShift={1.6} />
+              {/* Ambient background glow for depth; parallax auto‑disables for reduced‑motion users */}
+              <GlowAccents size={GLOW_SIZE.CONTACT} parallax maxShift={GLOW_MAX_SHIFT} />
             </div>
             <div className="relative z-[1]">
-              <div className="relative overflow-hidden rounded-xl border border-token bg-card/70 backdrop-blur p-6 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover-accent focus-accent hover:-translate-y-1 hover:shadow-lg">
+              {/* Contact call‑to‑action */}
+              <Card className="p-6">
                 <h2 className="text-2xl font-bold tracking-tight text-blue-900 drop-shadow-[0_0_6px_rgba(30,58,138,0.25)] dark:text-amber-200 dark:drop-shadow-[0_0_16px_rgba(253,230,138,0.55)]">Let’s work together</h2>
                 <p className="mt-2 text-sm text-muted">
                   Email me or reach out on LinkedIn. I’m happy to chat about roles, projects, or collaboration.
@@ -718,7 +795,7 @@ export default function App() {
                     GitHub
                   </a>
                 </div>
-              </div>
+              </Card>
             </div>
           </section>
         </main>
